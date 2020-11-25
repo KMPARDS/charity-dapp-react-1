@@ -2,24 +2,24 @@ import React, { Component } from 'react';
 import './CampaignDetails.css';
 import { Link } from 'react-router-dom';
 import {
-  Navbar,
-  Nav,
-  NavDropdown,
   Button,
   Card,
-  Col,
   InputGroup,
   FormControl,
   ProgressBar,
 } from 'react-bootstrap';
+
 import Modal from 'react-bootstrap/Modal';
 import { Form } from 'react-bootstrap';
 import { Sidebar } from '../Sidebar';
+import { useMapState } from '../MapState';
 type State = {
   bunchModal: boolean;
   bunchModal1: boolean;
 };
 export class CampaignDetails extends Component<State> {
+  //  { mapState, setMapState } = useMapState();
+
   state: State = {
     bunchModal: false,
     bunchModal1: false,
@@ -27,6 +27,7 @@ export class CampaignDetails extends Component<State> {
   handleClose = () => {
     this.setState({
       bunchModal: false,
+      bunchModal1: true,
     });
   };
   handleShow = () => {
@@ -83,9 +84,9 @@ export class CampaignDetails extends Component<State> {
                       <Card className="shadow">
                         <Card.Body>
                           <div className="owl-carousel portfolio-details-carousel mt20">
-                            <img src="assets/img/dubi.jpg" className="img-fluid" alt="" />
-                            <img src="assets/img/dubi.jpg" className="img-fluid" alt="" />
-                            <img src="assets/img/dubi.jpg" className="img-fluid" alt="" />
+                            <img alt="img" src="assets/img/dubi.jpg" className="img-fluid"  />
+                            <img alt="img" src="assets/img/dubi.jpg" className="img-fluid"  />
+                            <img alt="img" src="assets/img/dubi.jpg" className="img-fluid"  />
                           </div>
 
                           <div className="portfolio-description">
@@ -109,13 +110,13 @@ export class CampaignDetails extends Component<State> {
                             <div className="alert alert-secondary" role="alert">
                               <h4 className="Font-weight-bold">
                                 Followon SwappersWall:{' '}
-                                <a href="" className="">
+                                <a href="/" className="">
                                   https://swapperswall.com
                                 </a>
                               </h4>
                             </div>
                           </div>
-                        </Card.Body>
+                        </Card.Body> 
                       </Card>
                     </div>
                     <div className="col-lg-4">
@@ -144,17 +145,17 @@ export class CampaignDetails extends Component<State> {
                           <div className="kyclevel d-flex flex-column flex-md-row mt20">
                             <div className="kyc-level-text font-weight-bold">KYC Level</div>
                             <div className="">
-                              <img
+                              <img alt="img"
                                 src="assets/img/kyc-level-1.png"
                                 width="45px"
                                 className="text-left"
                               />
-                              <img
+                              <img alt="img"
                                 src="assets/img/kyc-level-2.png"
                                 width="45px"
                                 className="text-left"
                               />
-                              <img
+                              <img alt="img"
                                 src="assets/img/kyc-level-3.png"
                                 width="45px"
                                 className="text-left"
@@ -173,7 +174,7 @@ export class CampaignDetails extends Component<State> {
                                       <div className="backers-details">
                                           <small className="donor-name font-weight-bold"> Campaigner 	</small>
                                           <span className="donor-name text-success"> Alliance for Progressive Indians</span>
-                                          <span className="contributed-amt pull-right">  <img  src="assets/img/verifiednew.png" width="45px" className="text-left"/></span>
+                                          <span className="contributed-amt pull-right">  <img alt="img" src="assets/img/verifiednew.png" width="45px" className="text-left"/></span>
                                           
                                     </div>
                                 </li>
@@ -184,7 +185,7 @@ export class CampaignDetails extends Component<State> {
                                     <div className="backers-details">
                                           <small className="donor-name font-weight-bold"> Benefiting NGO 	</small>
                                           <span className="donor-name text-success"> Karwan e Mohabbat </span>
-                                          <span className="contributed-amt pull-right">  <img  src="assets/img/verifiednew.png" width="45px" className="text-left"/></span>
+                                          <span className="contributed-amt pull-right">  <img alt="img"  src="assets/img/verifiednew.png" width="45px" className="text-left"/></span>
                                     </div>
                                 </li>
                             </ul>
@@ -228,6 +229,70 @@ export class CampaignDetails extends Component<State> {
                   </div>
                 </div>
               </div>
+              
+              <div className="mt40" style={{maxWidth:"540px",marginLeft:'20px'}}>
+                <div className="container" >
+                  <div className="row">
+                    <div className="col-sm-12">
+                      <h3>Comments</h3> <hr/>
+                    </div>
+                  </div>
+                <div className="comments">                
+                  <div className="row">
+                    <div className="col-1">
+                      <div className="thumbnail">
+                        <img alt="img" className="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+                      </div>
+                    </div>
+                    <div className="col-11">
+                      <div className="panel panel-default">
+                        <div className="panel-heading">
+                          <strong>myusername</strong> <span className="text-muted">commented 5 days ago</span>
+                        </div>
+                        <div className="panel-body">Karwan e Mohabbat and a team of volunteers are reaching out to the most vulnerable people and communities who find themselves stranded without work, food and home during the lockdown announced by the Indian government. As millions of daily wage labourers and working-class people find themselves without work, food and shelter, the war against the COVID-19 is threatening to become a humanitarian and economic crisis beyond imagination. These are the people who are at most risk of severe ill-health and death due to starvation. There are sections of the population that live on the edge even in times of apparent “normalcy”. When faced with a crisis like the Corona induced lockdown, it is they who are the most likely to fall off the edge.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-1">
+                      <div className="thumbnail">
+                        <img alt="img" className="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+                      </div>
+                    </div>
+                    <div className="col-11">
+                      <div className="panel panel-default">
+                        <div className="panel-heading">
+                          <strong>myusername</strong> <span className="text-muted">commented 5 days ago</span>
+                        </div>
+                        <div className="panel-body">Karwan e Mohabbat and a team of volunteers are reaching out to the most vulnerable people and communities who find themselves stranded without work, food and home during the lockdown announced by the Indian government. As millions of daily wage labourers and working-class people find themselves without work, food and shelter, the war against the COVID-19 is threatening to become a humanitarian and economic crisis beyond imagination. These are the people who are at most risk of severe ill-health and death due to starvation. There are sections of the population that live on the edge even in times of apparent “normalcy”. When faced with a crisis like the Corona induced lockdown, it is they who are the most likely to fall off the edge.</div>
+                      </div>
+                    </div>
+                  </div>
+                {/* Start here  */}
+                  <div className="row">
+                    <div className="col-1">
+                      <div className="thumbnail">
+                        <img alt="img" className="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+                      </div>
+                    </div>
+                    <div className="col-11">
+                      <div className="panel panel-default">
+                        <div className="panel-heading">
+                          <strong className="text-primary ">myusername</strong> <span className="text-muted">commented 5 days ago</span>
+                        </div>
+                        <div className="panel-body">Panel content</div>
+                      </div>
+                    </div>
+                  </div>
+                {/* End here */}
+                </div>
+                  <form>
+                    <textarea rows={4} className="form-control m-2 col-sm-8 p-3" placeholder="Write Something here ..."></textarea>
+                    <button className="btn btn-primary">Post</button>
+                  </form>
+                </div>
+              </div>
+
 
 
               <div className="mt40">
@@ -247,7 +312,7 @@ export class CampaignDetails extends Component<State> {
                               >
                                 <div className="icon-box cha-list-box">
                                   <div className="cha-list-box-img">
-                                    <img
+                                    <img alt="img"
                                       src="assets/img/dubi.jpg"
                                       width="100%"
                                       className="text-left"
@@ -255,7 +320,7 @@ export class CampaignDetails extends Component<State> {
                                   </div>
                                   <div className="cha-list-box-text mt10">
                                     <h4>
-                                      <a href="">
+                                      <a href="/">
                                         Children in Need of Supplies Preventing COVID 19
                                       </a>
                                     </h4>
@@ -282,17 +347,17 @@ export class CampaignDetails extends Component<State> {
                                         KYC Level{' '}
                                       </div>
                                       <div className="">
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-1.png"
                                           width="45px"
                                           className="text-left"
                                         />
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-2.png"
                                           width="45px"
                                           className="text-left"
                                         />
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-3.png"
                                           width="45px"
                                           className="text-left"
@@ -309,7 +374,7 @@ export class CampaignDetails extends Component<State> {
                               >
                                 <div className="icon-box cha-list-box">
                                   <div className="cha-list-box-img">
-                                    <img
+                                    <img alt="img"
                                       src="assets/img/dubi.jpg"
                                       width="100%"
                                       className="text-left"
@@ -344,17 +409,17 @@ export class CampaignDetails extends Component<State> {
                                         KYC Level{' '}
                                       </div>
                                       <div className="">
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-1.png"
                                           width="45px"
                                           className="text-left"
                                         />
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-2.png"
                                           width="45px"
                                           className="text-left"
                                         />
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-3.png"
                                           width="45px"
                                           className="text-left"
@@ -372,7 +437,7 @@ export class CampaignDetails extends Component<State> {
                               >
                                 <div className="icon-box cha-list-box">
                                   <div className="cha-list-box-img">
-                                    <img
+                                    <img alt="img"
                                       src="assets/img/dubi.jpg"
                                       width="100%"
                                       className="text-left"
@@ -407,17 +472,17 @@ export class CampaignDetails extends Component<State> {
                                         KYC Level{' '}
                                       </div>
                                       <div className="">
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-1.png"
                                           width="45px"
                                           className="text-left"
                                         />
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-2.png"
                                           width="45px"
                                           className="text-left"
                                         />
-                                        <img
+                                        <img alt="img"
                                           src="assets/img/kyc-level-3.png"
                                           width="45px"
                                           className="text-left"
@@ -476,7 +541,7 @@ export class CampaignDetails extends Component<State> {
           <Modal show={this.state.bunchModal1} onHide={this.handleClose1} className="com-modal">
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body className="text-center">
-              <h2 className="font-weight-bold mb20 text-info">>Congratulations!!!</h2>
+              <h2 className="font-weight-bold mb20 text-info">Congratulations!!!</h2>
               <h5 className="font-weight-bold mb20">You Have Donated To This Active Campaign</h5>
               <a
                 href="https://eraswap.life/access-my-wallet"

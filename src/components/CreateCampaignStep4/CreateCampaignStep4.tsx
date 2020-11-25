@@ -2,18 +2,13 @@ import React, { Component } from 'react';
 import './CreateCampaignStep4.css';
 import { Link } from 'react-router-dom';
 import {
-  Navbar,
-  Nav,
-  NavDropdown,
   Button,
   Card,
-  Col,
   InputGroup,
   FormControl,
 } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { Form } from 'react-bootstrap';
-import { Sidebar } from '../Sidebar/';
 type State = {
   bunchModal: boolean;
 };
@@ -70,15 +65,16 @@ export class CreateCampaignStep4 extends Component<State> {
                             <Form.Label className="font-weight-bold">
                               Delegated Time Period for the stake
                             </Form.Label>
-                            <Form.Control as="select" custom>
-                              <option>Month</option>
-                              <option>Year</option>
-                              <option>Days</option>
-                            </Form.Control>
+                            
+                            <Form.Control
+                              type="datetime-local"
+                              placeholder=""
+                            />
+                            
                           </Form.Group>
                           <Form.Group controlId="formBasicEmail">
                             <Form.Label className="font-weight-bold">
-                              KYC Level (Prompted to have atleast KYC Level 2)
+                              Do you need Full Extraction ?
                             </Form.Label>
                             <div className="clear"></div>
                             <div className="form-check form-check-inline">
@@ -102,21 +98,19 @@ export class CreateCampaignStep4 extends Component<State> {
                           </Form.Group>
                           <Form.Group controlId="formBasicEmail">
                             <Form.Label className="font-weight-bold">Review Perid</Form.Label>
-                            <Form.Control as="select" custom>
-                              <option>Month</option>
-                              <option>Year</option>
-                              <option>Days</option>
-                            </Form.Control>
+                            <Form.Control
+                              type="date"
+                            />
                           </Form.Group>
 
                           <Form.Group controlId="formBasicEmail">
-                            <Form.Label className="font-weight-bold">About Benificery</Form.Label>
-                            <textarea
-                              className="form-control"
-                              name="message"
-                              rows={3}
-                              placeholder="Message"
-                            />
+                            <Form.Label className="font-weight-bold">Add  Link</Form.Label>
+                            <InputGroup className="mb-2">
+                              <InputGroup.Prepend>
+                                <InputGroup.Text><i className="fa fa-link" aria-hidden="true"></i></InputGroup.Text>
+                              </InputGroup.Prepend>
+                              <FormControl id="inlineFormInputGroup" placeholder="" />
+                            </InputGroup>
                           </Form.Group>
 
                           <Button className="mb10 ml10 btn btn-dark" onClick={this.handleShow}>

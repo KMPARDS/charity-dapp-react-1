@@ -54,14 +54,14 @@ export class Home extends Component<State> {
                   <br />
                   <Button className="get-started-btn btn-yellow btn btn-lg scrollto"  onClick={this.handleShow}>
                     Explore Campaigns
-                  </Button>
-                  <Link to="" className="get-started-btn btn scrollto btn-lg"  onClick={this.handleShow1}>
+                  </Button> 
+                  <Link to="/CreateCampaign" className="get-started-btn btn scrollto btn-lg"  onClick={this.handleShow1}>
                     Create Your Campaign
                   </Link>
                 </div>
               </div>
             </div>
-          </section>
+          </section>  
 
 
          <Modal show={this.state.bunchModal} onHide={this.handleClose} className="com-modal" >

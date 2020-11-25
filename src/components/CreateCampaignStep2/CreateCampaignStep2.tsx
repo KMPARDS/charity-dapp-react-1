@@ -99,6 +99,7 @@ export class CreateCampaignStep2 extends Component<State> {
                   </div>
                 </div>
               </div>
+           
             </section>
           </div>
         </main>
