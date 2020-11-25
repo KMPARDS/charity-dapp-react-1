@@ -1,59 +1,187 @@
-import React, { Component } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import './Navbar.css'
 import { Link } from 'react-router-dom';
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { Dropdown,Tooltip ,OverlayTrigger} from 'react-bootstrap';
+import {ethers} from 'ethers';
+import Swal from 'sweetalert2';
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import copy from 'copy-to-clipboard';
+import WalletContext from '../WalletContext';
 
 
 
 
-export class NavbarMain extends Component{
+export function NavbarMain(){
+   const globalState = useContext(WalletContext);
+  const [Address, setAddress] = useState(null);
+  const [bg, setBg] = useState('transparent');
 
-  render() {
+  async function loadWallet() {
+    try{
+      //  Create WalletConnect Provider
+      const walletConnectProvider = new WalletConnectProvider({
+        rpc : { 5196 : 'https://testnet.eraswap.network'},
+        // infuraId: "b81341e3ab894360a84f3fa640ab985e" ,
+        qrcode: true  
+      });
+      await walletConnectProvider.enable();
+      const provider = new ethers.providers.Web3Provider(walletConnectProvider);
+      console.log(provider.getSigner());
+      const wallet = await provider.getSigner();
+      const address = await wallet.getAddress();
+      setAddress(address);
+      globalState.setState({address});
+      window.wallet = wallet;
+    }catch(e){
+      Swal.fire(
+         'Opps !',
+         'Something went wrong. Please try again',
+         'error'
+      )
+    }
+  }
+
+const loadMetamask = async () => {
+  try {
+    if (window.ethereum) {
+      //@ts-ignore
+      window.ethereum.enable();
+      const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
+      const network = await metamaskProvider.getNetwork();
+      if (network.name === 'homestead') {
+        network.name = 'Main Ethereum Network';
+        alert('please connect with https://test.eraswap.network');
+      } else if (network.chainId === 5196) {
+        network.name = 'Test EraSwap Network';
+      } else if (network.chainId === 5197) {
+        network.name = 'Main Era Swap Network';
+      }
+      console.log(ethers.Wallet);
+      const onCorrectNetwork = network.chainId === Number(process.env.REACT_APP_CHAIN_ID ?? 0);
+      if (!onCorrectNetwork) {
+        alert('please connect to eraswap network ');
+      } else {
+        const wallet = await metamaskProvider.getSigner();
+        console.log('Wallet : ', wallet);
+        const address = await wallet.getAddress();
+        setAddress(address);
+        globalState.setState({address});
+
+        console.log('Address :', address);
+        window.wallet = wallet;
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    Swal.fire(
+      'Opps !',
+      'Something went wrong. Please try again',
+      'error'
+    )
+  }
+};
+  function Wallet(){
     return (
-      
-  
-      
-  
-<header id="header" className="header-inner-pages">
+      <div style={{width:'400px', marginTop:'10px',padding:"15px"}}>
+        <p>Use Account From </p>
+        <div className="dropdown-divider "></div>
+        <div className="row">
+          <div className="col-4 text-center  wallet "
+               onClick={loadMetamask}>
+            <img className='my-1' src="https://docs.metamask.io/metamask-fox.svg" width='70px' alt="metamsak" />
+            <h6>MetaMask</h6>
+          </div>
+          <div className="col-4 text-center   wallet "
+               onClick={loadWallet}>
+            <img src="https://avatars0.githubusercontent.com/u/37784886" width='70px' alt="walletconnect" />
+            <h6>WalletConnect</h6>
+          </div>
+          <div className="col-4 text-center wallet "
+               onClick={() => window.open('https://eraswap.life/', '', 'width=1001,height=650')}>
+            <img className='my-3' src={process.env.PUBLIC_URL + "assets/img/eralogo.png"} width='70px'  alt="eraswap" />
+            <h6>EraSwap.life</h6>
+          </div>
+        </div>   
+        <div className="dropdown-divider "></div>
+        <a href="https://eraswap.life/create-new-wallet" target='_blank' rel="noopener noreferrer" className="text-center">Don’t have an Ethereum account?</a>
+      </div>
+    )} 
+    const renderTooltip = (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        Copied !
+      </Tooltip>
+    );
+    function Account(){
+     return (<div style={{width:'400px', marginTop:'10px' ,padding:"15px"}}>
+        <p>ACTIVE ACCOUNT</p>
+        <div className="dropdown-divider "></div> 
+        <OverlayTrigger placement="left" overlay={renderTooltip }>
+          <i className="fa fa-clone" 
+           style={{ marginLeft: 8, float: 'right', fontSize: '1.5em' }}
+           onClick={()=>{copy(Address)}}></i>
+         </OverlayTrigger>
+        <p><i className="fa fa-dot-circle-o text-success" ></i> You are Connected with : {globalState.state?.address}</p>
+        <div className="dropdown-divider "></div>
+        <button type="button" className="btn btn-outline-danger btn-block"
+                onClick={()=>{window.wallet = undefined;setAddress(null);globalState.setState({address:""});}}>
+          DisConnect</button>
+
+      </div>
+      )} 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    function CustomWallets(e: MessageEvent<any>){
+      setTimeout(() => {
+      const message = e.data;
+      if (message.substring) {
+        if (message.substring(0, 2) === '0x') {
+          if(window.wallet){setAddress(window.wallet.address);globalState.setState({address: window.wallet.address});}
+        }
+      }
+    },0);
+    }
+    // ( async () => 
+    // { if(window.wallet){
+    //    if( (window.wallet.address))setAddress( (window.wallet.address));
+    //    else setAddress( (await window.wallet.getAddress()));
+    //  }})();
+
+     
+    useEffect(() => {
+        document.addEventListener("scroll", () => {
+          const backgroundcolor = window.scrollY < 100 ? "transparent" : "white";
+          setBg(backgroundcolor);
+        })
+        window.addEventListener('message',e=>{CustomWallets(e)} )
+        return () => {
+           window.removeEventListener('message', e=>{CustomWallets(e)})
+        }
+      }, [Address, CustomWallets])
+
+
+    return (  
+      <header id="header" className="header-inner-pages">
          <div className="container-fluid d-flex align-items-center justify-content-between pdt10">
          
          <h1 className="logo"><a href="/">
-            <img src="assets/img/logo.png"/>
+            <img src="/assets/img/logo.png" alt="logo"/>
          </a></h1>
                <nav className="nav-menu d-none d-lg-block">
             <ul>
-               <li className="active"><a href="/">Home</a></li>
+               <li className="active"><a href="/">Home</a></li> 
                <li><a href="/#aboutus">About</a></li>
                <li><a href="/#why">Why</a></li>
             </ul>
          </nav>
-        <a href="https://eraswap.life/" target="_blank" className="get-started-btn scrollto btn">Connect To Wallet</a>
-
-         </div>
-   
-
-        {/* <svg class="al-wave" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1240 120" style="enable-background:new 0 0 1240 120;" xml:space="preserve">
-        <path class="hk" d="M682.2,39.6C418.5-11.1,140.2,9.9,0,30v96h1440V30C1252.7,52.2,1011,96.4,675.6,38.7z" fill="#ffffff" />
-    </svg> */}
-   {/* <div id="header" className="fixed-top ">
-      <div className="container-fluid d-flex align-items-center justify-content-between">
-         <h1 className="logo"><a href="index.html">
-            <img src="assets/img/poolindapp.png"/>
-            </a>
-         </h1>
-         <nav className="nav-menu d-none d-lg-block">
-            <ul>
-               <li className="active"><a href="index.html">Home</a></li>
-               <li><a href="#features">Features </a></li>
-               <li><a href="#benefit">Benefit</a></li>
-            </ul>
-         </nav>
-         <a href="https://eraswap.life/" target="_blank" className="get-started-btn scrollto">Connect To Wallet</a>
-      </div>
-   </div> */}
-  
-</header>
+         {/* <a href="https://eraswap.life/" target="_blank" className="get-started-btn scrollto btn">Connect To Wallet</a> */}
+         <Dropdown className="nav mr10" alignRight>
+                <Dropdown.Toggle className="get-started-btn scrollto btn" id="dropdown-basic">
+                  {(!Address)?('Connect to Wallet'):(<><i className="fa fa-circle text-success"></i>&nbsp;{Address}</>) }
+                </Dropdown.Toggle>
+                <Dropdown.Menu  > 
+                 {(!Address)?<Wallet />:<Account/>}
+                </Dropdown.Menu>
+              </Dropdown> 
+         </div>  
+      </header>
     );
-
-  }
 }
