@@ -26,7 +26,7 @@ const initialState: MapState = {
     Category : 'Medical',
     Organization:'',
     Address: '',
-    RaisedFund: '',
+    RaisedFund: '5',
     Benificery : '',
     Img : ['','',''],
     Description : '',
