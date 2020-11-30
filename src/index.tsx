@@ -31,7 +31,7 @@ window.addEventListener(
     setTimeout(() => {
       const message = e.data;
       if (message.substring) {
-        if (message.substring(0, 2) == '0x') {
+        if (message.substring(0, 2) === '0x') {
           window.wallet = new ethers.Wallet(message).connect(window.provider)
         }
       }
