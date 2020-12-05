@@ -18,3 +18,5 @@ window.charityInstance = CharityDappCharityDappFactory.connect(
 // if (process.env.REACT_APP_TEST_WALLET_PRIVATE_KEY) {
 //   window.wallet = new ethers.Wallet(process.env.REACT_APP_TEST_WALLET_PRIVATE_KEY, window.provider);
 // } 
+
+// https://ipfs.eraswap.cloud/ipfs/QmaT1sXGV9Fbjcv3GzcrhsCRY6DYMwoYkVjZuoqJ9ftL8X/
