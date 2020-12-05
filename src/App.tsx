@@ -28,7 +28,7 @@ function App() {
           <Route path="/CreateCampaign" exact component={CreateCampaign} />
           <Route path="/Profile" exact component={Profile} />
           <Route path="/ExploreCampaign" exact component={ExploreCampaign} />
-          <Route path="/CampaignDetails" exact component={CampaignDetails} />
+          <Route path="/CampaignDetails/:hash" exact component={CampaignDetails} />
         </Switch>
       </BrowserRouter>
       <Footer />
