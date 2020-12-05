@@ -40,9 +40,6 @@ export class Home extends Component<State> {
   };
 
   getCampaign = async () => {
-    const getPool = await window.charityInstance.charityPoolDonations;
-    console.log(getPool);
-
     // const pool = ethers.utils.formatEther(getPool);
     const filter = window.charityInstance.filters.ProposalAproved(null, null, null);
     const logs = await window.charityInstance.queryFilter(filter);

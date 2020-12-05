@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import copy from 'copy-to-clipboard';
 import WalletContext from '../WalletContext';
+import { Link } from 'react-router-dom';
 
 export function NavbarMain() {
   const globalState = useContext(WalletContext);
@@ -138,6 +139,12 @@ export function NavbarMain() {
           <i className="fa fa-dot-circle-o text-success"></i> You are Connected with :{' '}
           {globalState.state?.address}
         </p>
+        <Link to='/Profile'
+          className="btn btn-outline-primary btn-block"
+          
+        >
+          See Profile
+        </Link>
         <div className="dropdown-divider "></div>
         <button
           type="button"
