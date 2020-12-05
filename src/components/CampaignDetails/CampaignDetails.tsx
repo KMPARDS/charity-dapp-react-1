@@ -1,55 +1,218 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
+import {  Spinner } from 'react-bootstrap';
 import './CampaignDetails.css';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { Link, useParams } from 'react-router-dom';
 import {
   Button,
   Card,
   InputGroup,
   FormControl,
-  ProgressBar,
+  ProgressBar,Modal
 } from 'react-bootstrap';
 
-import Modal from 'react-bootstrap/Modal';
-import { Form } from 'react-bootstrap';
-import { Sidebar } from '../Sidebar';
-import { useMapState } from '../MapState';
-type State = {
-  bunchModal: boolean;
-  bunchModal1: boolean;
-};
-export class CampaignDetails extends Component<State> {
-  //  { mapState, setMapState } = useMapState();
 
-  state: State = {
-    bunchModal: false,
-    bunchModal1: false,
-  };
-  handleClose = () => {
-    this.setState({
-      bunchModal: false,
-      bunchModal1: true,
-    });
-  };
-  handleShow = () => {
-    this.setState({
-      bunchModal: true,
-    });
-  };
+import { ethers } from 'ethers';
+import {  renderTimestampRemaining, timeStamptodays } from '../../utils';
+import Swal from 'sweetalert2';
 
-  handleClose1 = () => {
-    this.setState({
-      bunchModal1: false,
-    });
-  };
-  handleShow1 = () => {
-    this.setState({
-      bunchModal1: true,
-    });
-  };
-  componentDidMount() {}
-  render() {
+type DataType ={
+  title? : string;
+  about ?: string;
+  image1 ?: string;
+  image2 ?: string;
+  image3 ?: string;
+  Category ?: string;
+  user ?: string;
+  designation ?: string;
+  link ?: string;
+  deadline ?: number;
+  organization ?: string ;
+  address ?: string;
+  raised ?: number;
+  goal ?: number; 
+  supporter ?: number;
+  approved ?: boolean;
+}
+
+
+export function CampaignDetails()  {
+
+  const { hash } = useParams() as { hash: string };
+  const [exist, setExist] = useState<boolean>(true);
+  const [spin, setSpin] = useState<boolean>(true);
+  const [details, setDetails] = useState<DataType>({});
+  const [comment, setComment] = useState<string>("");
+  const [comments, setComments] = useState<any>([]);
+  const [recent, setRecent] = useState<any>([]);
+  console.log(hash);
+  const getData = async () => {
+    const Hash = await window.charityInstance.campaigns(hash);
+    const support = await window.charityInstance.support(hash);
+    const ipfshash = Hash[0];
+    console.log(ipfshash); 
+    const data = await axios.get(`https://ipfs.eraswap.cloud/ipfs/${ipfshash}`);
+    console.log(data);
+     if(data.status !== 200)setExist(false);
+    setDetails(data.data);
+
+    const newDetail :DataType ={
+      title : data.data?.Benificery,
+      about : data.data?.Description,
+      image1 : data.data?.Img[0],
+      image2 : data.data?.Img[1],
+      image3 : data.data?.Img[2],
+      Category : data.data?.Category, 
+      user : data.data?.userName,
+      designation : data.data?.userDesignation,
+      link : data.data?.link,
+      deadline : Hash[5].toNumber() ,
+      organization : data.data?.Organization,
+      address : data.data?.Address,
+      raised : parseInt(ethers.utils.formatEther(Hash[8])),
+      goal : parseInt(ethers.utils.formatEther(Hash[7])),
+      supporter : support.toNumber(),
+      approved : Hash[4]
+    }
+    setDetails(newDetail);
+    console.log(details);
+    
+  }; 
+
+  const showComments = async () => {
+    const filter = window.charityInstance.filters.Comments(hash,null, null, null);
+    const logs = await window.charityInstance.queryFilter(filter);
+    const parsedLogs = logs.map((log) => window.charityInstance.interface.parseLog(log));
+    const updatevalues = parsedLogs.map((parsedLogs) => parsedLogs.args);
+    console.log('All Comments: ', updatevalues);
+    setComments(updatevalues);    
+  }
+
+  const recentTxn = async () => {
+    const filter = window.charityInstance.filters.Donated(hash,null, null);
+    const logs = await window.charityInstance.queryFilter(filter);
+    const parsedLogs = logs.map((log) => window.charityInstance.interface.parseLog(log));
+    let updatevalues = parsedLogs.map((parsedLogs) => parsedLogs.args);
+    console.log('All Comments: ', updatevalues);
+    updatevalues.reverse();
+    if(updatevalues.length > 3)updatevalues = updatevalues.slice(0,3);
+    setRecent(updatevalues);    
+  }
+  
+  const postComment = async () => {
+    // e.preventDefault();
+    if(window.wallet){
+      const A = await window.charityInstance.connect(window.wallet).populateTransaction.addComments(hash,comment);
+      console.log("call : ",A); 
+      Swal.fire({
+        title: "Are you sure?", 
+        text: "You will not be able to undo this action!",
+        html: `<p>You will not be able to undo this action!</p>
+                <h1 style={{fontStyle:"bold"}}> Value : ${A.value ? ethers.utils.formatEther(A?.value) : '0'} </h1>
+                <small> To : ${A.to} </small><br/><small> From : ${A.from} ES </small>
+                <p> gasFee : ${A?.gasPrice || '0'} </p>`,
+        icon: "warning", 
+        showCancelButton: true,
+        cancelButtonText: 'No, cancel!',
+        confirmButtonText: "Yes, do it!",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return window.charityInstance.connect(window.wallet).addComments(hash,comment)
+          .then(async res => {
+            Swal.fire({title : 'Good job!',
+                       icon : 'success',
+                       text : 'You have post your comment '})
+          }).catch(async ()=>{
+            const add = (window.wallet.address)?window.wallet.address:(await window.wallet.getAddress());
+            const x = new ethers.VoidSigner(add, window.providerESN);
+            try {
+              const A = await window.charityInstance.connect(window.wallet).estimateGas.addComments(hash,comment)
+              console.log(A);
+            } catch (e) {
+              console.log('Error is : ', e);
+              Swal.fire('Oops...!', `${e}`, 'error')
+            }
+          });
+        }
+  
+      });
+
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Please Connect to wallet ...', 
+      });
+    }
+  }
+
+  const Donate = async () => {
+    if(window.wallet){
+      // const A = await window.charityInstance.connect(window.wallet).populateTransaction.addComments(hash,comment);
+      // console.log("call : ",A); 
+      Swal.fire({
+        title: "Nice !", 
+        text: "Please enter amount",
+        input: 'number',
+        showCancelButton: true,
+        cancelButtonText: 'cancel',
+        confirmButtonText: "Confirm",
+        showLoaderOnConfirm: true,
+        preConfirm: async (val) => {
+          return await window.charityInstance.connect(window.wallet).donate(hash,{value: ethers.utils.parseEther(val)})
+          .then( res => {
+            Swal.fire({title : 'Good job!',
+                       icon : 'success',
+                       text : 'You have post your comment '})
+          },e =>Swal.fire('Oops...!', `${JSON.stringify(e)}`, 'error'));
+          // .catch(async ()=>{
+          //   const add = (window.wallet.address)?window.wallet.address:(await window.wallet.getAddress());
+          //   const x = new ethers.VoidSigner(add, window.provider);
+          //   try {
+          //     const A = await window.charityInstance.connect(x).estimateGas.donate(hash,{value: ethers.utils.parseEther(val)})
+          //     console.log(A);
+          //   } catch (e) { 
+          //     console.log('Error is : ', e);
+          //     Swal.fire('Oops...!', `${e}`, 'error')
+          //   }
+          // });
+        }
+  
+      });
+
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Please Connect to wallet ...', 
+      });
+    }
+  }
+
+  
+  //  { mapState, setMapState } = useMapState();  
+  useEffect(() => {
+    (async () => {
+      try {
+        await getData();
+        await showComments();
+        await recentTxn();
+      } catch {
+        setExist(false);
+      }
+      setSpin(false);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spin]);
+  
+ 
+     
     return (
-      <>
+      <div>
+        {spin ? (
+        <div className="preloader">
+          <Spinner className="loader" animation="border" variant="primary" />
+        </div>
+      ) : null}
+      { exist ? (
         <main id="main">
           <div className="inner-page">
             <section className="breadcrumbs">
@@ -75,7 +238,7 @@ export class CampaignDetails extends Component<State> {
                       data-aos-delay="100"
                     >
                       <h3 className="font-weight-bold">
-                        Children in Need of Supplies Preventing COVID 19
+                        {details.title}
                       </h3>
                     </div>
                   </div>
@@ -84,9 +247,9 @@ export class CampaignDetails extends Component<State> {
                       <Card className="shadow">
                         <Card.Body>
                           <div className="owl-carousel portfolio-details-carousel mt20">
-                            <img alt="img" src="assets/img/dubi.jpg" className="img-fluid"  />
-                            <img alt="img" src="assets/img/dubi.jpg" className="img-fluid"  />
-                            <img alt="img" src="assets/img/dubi.jpg" className="img-fluid"  />
+                            <img alt="img" src={'https://ipfs.eraswap.cloud/ipfs/' + details?.image1} className="img-fluid"  />
+                            <img alt="img" src={'https://ipfs.eraswap.cloud/ipfs/' + details?.image2} className="img-fluid"  />
+                            <img alt="img" src={'https://ipfs.eraswap.cloud/ipfs/' + details?.image3} className="img-fluid"  />
                           </div>
 
                           <div className="portfolio-description">
@@ -94,24 +257,12 @@ export class CampaignDetails extends Component<State> {
                             <p className="alert alert-warning alert-dismissible fade show">
                               *CharityDApp is not charging any fee on this fundraiser*
                             </p>
-                            <p>
-                              Karwan e Mohabbat and a team of volunteers are reaching out to the
-                              most vulnerable people and communities who find themselves stranded
-                              without work, food and home during the lockdown announced by the
-                              Indian government. As millions of daily wage labourers and
-                              working-class people find themselves without work, food and shelter,
-                              the war against the COVID-19 is threatening to become a humanitarian
-                              and economic crisis beyond imagination. These are the people who are
-                              at most risk of severe ill-health and death due to starvation. There
-                              are sections of the population that live on the edge even in times of
-                              apparent “normalcy”. When faced with a crisis like the Corona induced
-                              lockdown, it is they who are the most likely to fall off the edge.
-                            </p>
+                            <p>{details?.about} </p>
                             <div className="alert alert-secondary" role="alert">
                               <h4 className="Font-weight-bold">
-                                Followon SwappersWall:{' '}
-                                <a href="/" className="">
-                                  https://swapperswall.com
+                                Followon SwappersWall:
+                                <a href={details?.link} className="">
+                                  {details?.link}
                                 </a>
                               </h4>
                             </div>
@@ -123,22 +274,22 @@ export class CampaignDetails extends Component<State> {
                       <div className="icon-box cha-list-box">
                         <div className="cha-list-box-">
                           <Button
-                            onClick={this.handleShow}
+                            onClick={Donate}
                             className="get-started-btn scrollto dontate-btn text-center btn-lg btn-yellow btn-block"
                           >
                             Donate Now
                           </Button>
                           <div className="brand-color-1-text text-left amount-raised">
-                            <h2>₹2,171,709 </h2>
-                            <small className="text-dark">Raised out of ₹ 6,00,890 Goal</small>
+                            <h2>{details.raised} ES</h2>
+                            <small className="text-dark">Raised out of {details?.goal}ES Goal</small>
                           </div>
-                          <ProgressBar animated now={45} variant="info" />
+                          <ProgressBar animated now={Math.floor(details?.raised*100/details.goal)} variant="info" />
                           <div className="cha-list-box-footer d-flex flex-column flex-md-row mt10">
-                            <div className="timeleft">
-                              <i className="fa fa-clock-o" aria-hidden="true"></i> 8 Days Left{' '}
+                            <div className="timeleft"> 
+                              <i className="fa fa-clock-o" aria-hidden="true"></i> &nbsp; { timeStamptodays(details.deadline)} days remaining
                             </div>
                             <div className="Suppoter ml-auto">
-                              <i className="fa fa-heart text-danger" aria-hidden="true"></i> 1246
+                              <i className="fa fa-heart text-danger" aria-hidden="true"></i> {details?.supporter}
                               Supporters{' '}
                             </div>
                           </div>
@@ -146,17 +297,17 @@ export class CampaignDetails extends Component<State> {
                             <div className="kyc-level-text font-weight-bold">KYC Level</div>
                             <div className="">
                               <img alt="img"
-                                src="assets/img/kyc-level-1.png"
+                                src={process.env.PUBLIC_URL+"/assets/img/kyc-level-1.png"}
                                 width="45px"
                                 className="text-left"
                               />
                               <img alt="img"
-                                src="assets/img/kyc-level-2.png"
+                                src={process.env.PUBLIC_URL+"/assets/img/kyc-level-2.png"}
                                 width="45px"
                                 className="text-left"
                               />
                               <img alt="img"
-                                src="assets/img/kyc-level-3.png"
+                                src={process.env.PUBLIC_URL+"/assets/img/kyc-level-3.png"}
                                 width="45px"
                                 className="text-left"
                               />
@@ -169,59 +320,41 @@ export class CampaignDetails extends Component<State> {
                             <ul className="com-list">
                                 <li>
                                     <div className="pull-left">
-                                            <span className="profile-image center-block initialsProfile">JM</span>	
+                                            <span className="profile-image center-block initialsProfile">Org</span>	
                                     </div>
                                       <div className="backers-details">
-                                          <small className="donor-name font-weight-bold"> Campaigner 	</small>
-                                          <span className="donor-name text-success"> Alliance for Progressive Indians</span>
-                                          <span className="contributed-amt pull-right">  <img alt="img" src="assets/img/verifiednew.png" width="45px" className="text-left"/></span>
+                                          <small className="donor-name font-weight-bold"> Organization 	</small>
+                                          <span className="donor-name text-success"> {details?.organization}</span>
+                                          <span className="contributed-amt pull-right">  <img alt="img" src={process.env.PUBLIC_URL+"/assets/img/verifiednew.png"} width="45px" className="text-left"/></span>
                                           
                                     </div>
                                 </li>
                                 <li>
                                     <div className="pull-left">
-                                            <span className="profile-image center-block initialsProfile">JM</span>	
+                                            <span className="profile-image center-block initialsProfile">Cp</span>	
                                     </div>
                                     <div className="backers-details">
-                                          <small className="donor-name font-weight-bold"> Benefiting NGO 	</small>
-                                          <span className="donor-name text-success"> Karwan e Mohabbat </span>
-                                          <span className="contributed-amt pull-right">  <img alt="img"  src="assets/img/verifiednew.png" width="45px" className="text-left"/></span>
+                                          <small className="donor-name font-weight-bold"> Campaigner </small>
+                                          <span className="donor-name text-success"> {details?.user}</span>
+                                          <span className="contributed-amt pull-right">  <img alt="img"  src={process.env.PUBLIC_URL+"/assets/img/verifiednew.png"} width="45px" className="text-left"/></span>
                                     </div>
                                 </li>
                             </ul>
                       </div>
                       <div className="portfolio-info">
-                        <h3><i className="fa fa-trophy" aria-hidden="true"></i> Top Donors</h3>
+                        <h3><i className="fa fa-trophy" aria-hidden="true"></i> Recent Donors</h3>
 
                       
                         <ul className="com-list">
+                        {recent.map((ele) => {
+                          return (
                           <li>
-                              <div className="pull-left">
-                                      <span className="profile-image center-block initialsProfile">JM</span>	
-                              </div>
-                                <div className="backers-details">
-                                    <span className="donor-name"> Jitendra Mohan Choudhry	</span>
-                                    <span className="contributed-amt pull-right"><i className="fa fa-inr"></i> 5,000                                    				</span>
-                              </div>
+                            <span className="donor-name"> ele[1]	</span>
+                            <span className="contributed-amt pull-right"><i className="fa fa-inr"></i>ele[2]</span>
+                            {/* <div className="blackquote"><i className="fa fa-clock-o" aria-hidden="true"></i> 2 days ago</div>             */}
                           </li>
-                          <li>
-                              <div className="pull-left">
-                                      <span className="profile-image center-block initialsProfile">JM</span>	
-                              </div>
-                                <div className="backers-details">
-                                    <span className="donor-name"> Jitendra Mohan Choudhry	</span>
-                                    <span className="contributed-amt pull-right"><i className="fa fa-inr"></i> 5,000                                    				</span>
-                              </div>
-                          </li>
-                          <li>
-                              <div className="pull-left">
-                                      <span className="profile-image center-block initialsProfile">JM</span>	
-                              </div>
-                                <div className="backers-details">
-                                    <span className="donor-name"> Jitendra Mohan Choudhry	</span>
-                                    <span className="contributed-amt pull-right"><i className="fa fa-inr"></i> 5,000                                    				</span>
-                              </div>
-                          </li>
+                          );
+                        })}{' '}
                           
                         </ul>
                       </div>
@@ -238,38 +371,11 @@ export class CampaignDetails extends Component<State> {
                     </div>
                   </div>
                 <div className="comments">                
-                  <div className="row">
-                    <div className="col-1">
-                      <div className="thumbnail">
-                        <img alt="img" className="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
-                      </div>
-                    </div>
-                    <div className="col-11">
-                      <div className="panel panel-default">
-                        <div className="panel-heading">
-                          <strong>myusername</strong> <span className="text-muted">commented 5 days ago</span>
-                        </div>
-                        <div className="panel-body">Karwan e Mohabbat and a team of volunteers are reaching out to the most vulnerable people and communities who find themselves stranded without work, food and home during the lockdown announced by the Indian government. As millions of daily wage labourers and working-class people find themselves without work, food and shelter, the war against the COVID-19 is threatening to become a humanitarian and economic crisis beyond imagination. These are the people who are at most risk of severe ill-health and death due to starvation. There are sections of the population that live on the edge even in times of apparent “normalcy”. When faced with a crisis like the Corona induced lockdown, it is they who are the most likely to fall off the edge.</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-1">
-                      <div className="thumbnail">
-                        <img alt="img" className="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
-                      </div>
-                    </div>
-                    <div className="col-11">
-                      <div className="panel panel-default">
-                        <div className="panel-heading">
-                          <strong>myusername</strong> <span className="text-muted">commented 5 days ago</span>
-                        </div>
-                        <div className="panel-body">Karwan e Mohabbat and a team of volunteers are reaching out to the most vulnerable people and communities who find themselves stranded without work, food and home during the lockdown announced by the Indian government. As millions of daily wage labourers and working-class people find themselves without work, food and shelter, the war against the COVID-19 is threatening to become a humanitarian and economic crisis beyond imagination. These are the people who are at most risk of severe ill-health and death due to starvation. There are sections of the population that live on the edge even in times of apparent “normalcy”. When faced with a crisis like the Corona induced lockdown, it is they who are the most likely to fall off the edge.</div>
-                      </div>
-                    </div>
-                  </div>
+                  
                 {/* Start here  */}
-                  <div className="row">
+                {comments.map((ele) => {
+                    return (
+                      <div className="row">
                     <div className="col-1">
                       <div className="thumbnail">
                         <img alt="img" className="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
@@ -278,282 +384,31 @@ export class CampaignDetails extends Component<State> {
                     <div className="col-11">
                       <div className="panel panel-default">
                         <div className="panel-heading">
-                          <strong className="text-primary ">myusername</strong> <span className="text-muted">commented 5 days ago</span>
+                          <strong className="text-bold ">{ele[1]}</strong> <span className="text-muted"> { renderTimestampRemaining(ele[3].toNumber())} ago</span>
                         </div>
-                        <div className="panel-body">Panel content</div>
-                      </div>
+                        <div className="panel-body">{ele[2]}</div>
+                      </div> 
                     </div>
                   </div>
+                    );
+                  })}{' '}
+                  
                 {/* End here */}
                 </div>
-                  <form>
-                    <textarea rows={4} className="form-control m-2 col-sm-8 p-3" placeholder="Write Something here ..."></textarea>
-                    <button className="btn btn-primary">Post</button>
-                  </form>
+                 
+                    <textarea rows={4} onChange={e=> setComment(e.target.value)} value={comment} className="form-control m-2 col-sm-8 p-3" placeholder="Write Something here ..."></textarea>
+                    <button onClick={postComment} className="btn btn-primary">Post</button>
+                
                 </div>
               </div>
 
 
 
-              <div className="mt40">
-              <div className="container">
-                <div className="row">
-                  <div className="col-12 " data-aos="zoom-in" data-aos-delay="200">
-                  <h5 className="font-weight-bold ">People like you donated to these fundraisers</h5>
-                    <Card className="shadow mt20">
-                      <Card.Body>
-                        <div className="services about">
-                          <div className="container" data-aos="fade-up">
-                            <div className="row">
-                              <div
-                                className="col-lg-4 col-md-4 d-flex align-items-stretch mt-4 mt-md-0"
-                                data-aos="zoom-in"
-                                data-aos-delay="200"
-                              >
-                                <div className="icon-box cha-list-box">
-                                  <div className="cha-list-box-img">
-                                    <img alt="img"
-                                      src="assets/img/dubi.jpg"
-                                      width="100%"
-                                      className="text-left"
-                                    />
-                                  </div>
-                                  <div className="cha-list-box-text mt10">
-                                    <h4>
-                                      <a href="/">
-                                        Children in Need of Supplies Preventing COVID 19
-                                      </a>
-                                    </h4>
-                                    <div className="brand-color-1-text text-left amount-raised">
-                                      <strong>₹2,171,709 </strong>
-                                      <span className="text-dark">Raised out of ₹ 6,00,890</span>
-                                    </div>
-                                    <ProgressBar animated now={45} variant="info" />
-                                    <div className="cha-list-box-footer d-flex flex-column flex-md-row mt10">
-                                      <div className="timeleft">
-                                        <i className="fa fa-clock-o" aria-hidden="true"></i> 8 Days
-                                        Left{' '}
-                                      </div>
-                                      <div className="Suppoter ml-auto">
-                                        <i
-                                          className="fa fa-heart text-danger"
-                                          aria-hidden="true"
-                                        ></i>{' '}
-                                        1246 Supporters{' '}
-                                      </div>
-                                    </div>
-                                    <div className="kyclevel d-flex flex-column flex-md-row mt20">
-                                      <div className="kyc-level-text font-weight-bold">
-                                        KYC Level{' '}
-                                      </div>
-                                      <div className="">
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-1.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-2.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-3.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                className="col-lg-4 col-md-4 d-flex align-items-stretch mt-4 mt-md-0"
-                                data-aos="zoom-in"
-                                data-aos-delay="200"
-                              >
-                                <div className="icon-box cha-list-box">
-                                  <div className="cha-list-box-img">
-                                    <img alt="img"
-                                      src="assets/img/dubi.jpg"
-                                      width="100%"
-                                      className="text-left"
-                                    />
-                                  </div>
-                                  <div className="cha-list-box-text mt10">
-                                    <h4>
-                                      <a href="">
-                                        Children in Need of Supplies Preventing COVID 19
-                                      </a>
-                                    </h4>
-                                    <div className="brand-color-1-text text-left amount-raised">
-                                      <strong>₹2,171,709 </strong>
-                                      <span className="text-dark">Raised out of ₹ 6,00,890</span>
-                                    </div>
-                                    <ProgressBar animated now={45} variant="info" />
-                                    <div className="cha-list-box-footer d-flex flex-column flex-md-row mt10">
-                                      <div className="timeleft">
-                                        <i className="fa fa-clock-o" aria-hidden="true"></i> 8 Days
-                                        Left{' '}
-                                      </div>
-                                      <div className="Suppoter ml-auto">
-                                        <i
-                                          className="fa fa-heart text-danger"
-                                          aria-hidden="true"
-                                        ></i>{' '}
-                                        1246 Supporters{' '}
-                                      </div>
-                                    </div>
-                                    <div className="kyclevel d-flex flex-column flex-md-row mt20">
-                                      <div className="kyc-level-text font-weight-bold">
-                                        KYC Level{' '}
-                                      </div>
-                                      <div className="">
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-1.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-2.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-3.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                          
-                              <div
-                                className="col-lg-4 col-md-4 d-flex align-items-stretch mt-4 mt-md-0"
-                                data-aos="zoom-in"
-                                data-aos-delay="200"
-                              >
-                                <div className="icon-box cha-list-box">
-                                  <div className="cha-list-box-img">
-                                    <img alt="img"
-                                      src="assets/img/dubi.jpg"
-                                      width="100%"
-                                      className="text-left"
-                                    />
-                                  </div>
-                                  <div className="cha-list-box-text mt10">
-                                    <h4>
-                                      <a href="">
-                                        Children in Need of Supplies Preventing COVID 19
-                                      </a>
-                                    </h4>
-                                    <div className="brand-color-1-text text-left amount-raised">
-                                      <strong>₹2,171,709 </strong>
-                                      <span className="text-dark">Raised out of ₹ 6,00,890</span>
-                                    </div>
-                                    <ProgressBar animated now={45} variant="info" />
-                                    <div className="cha-list-box-footer d-flex flex-column flex-md-row mt10">
-                                      <div className="timeleft">
-                                        <i className="fa fa-clock-o" aria-hidden="true"></i> 8 Days
-                                        Left{' '}
-                                      </div>
-                                      <div className="Suppoter ml-auto">
-                                        <i
-                                          className="fa fa-heart text-danger"
-                                          aria-hidden="true"
-                                        ></i>{' '}
-                                        1246 Supporters{' '}
-                                      </div>
-                                    </div>
-                                    <div className="kyclevel d-flex flex-column flex-md-row mt20">
-                                      <div className="kyc-level-text font-weight-bold">
-                                        KYC Level{' '}
-                                      </div>
-                                      <div className="">
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-1.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-2.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                        <img alt="img"
-                                          src="assets/img/kyc-level-3.png"
-                                          width="45px"
-                                          className="text-left"
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                          
-                            </div>
-                          </div>
-                        </div>
-                      </Card.Body>
-                    </Card>
-                  </div>
-                </div>
-              </div>
-            </div>
-            </section>
-
-          
+              
+            </section>          
           </div>
-
-          <Modal show={this.state.bunchModal} onHide={this.handleClose} className="com-modal">
-            <Modal.Header closeButton></Modal.Header>
-            <Modal.Body className="text-center">
-              <div className="alert alert-secondary" role="alert">
-                <h4 className="Font-weight-bold">
-                  WALLET ADDRESS: <small className="">0X34C4204B0F808103F69EE547AB9567E2D0</small>
-                </h4>
-              </div>
-              <Form inline>
-                <Form.Group>
-                  <Form.Label htmlFor="">Amount </Form.Label>
-                  <Form.Label htmlFor="inlineFormInputGroupUsername" srOnly>
-                    Username
-                  </Form.Label>
-                  <InputGroup className="ml10">
-                    <FormControl id="inlineFormInputGroupUsername" placeholder="Username" />
-                    <InputGroup.Prepend>
-                      <InputGroup.Text>ES</InputGroup.Text>
-                    </InputGroup.Prepend>
-                  </InputGroup>
-                </Form.Group>
-              </Form>
-              <Button
-                className="btn btn-default btn-yellow mb20 text-white mt20"
-                onClick={this.handleClose}
-              >
-                Donate Now
-              </Button>
-            </Modal.Body>
-          </Modal>
-
-          <Modal show={this.state.bunchModal1} onHide={this.handleClose1} className="com-modal">
-            <Modal.Header closeButton></Modal.Header>
-            <Modal.Body className="text-center">
-              <h2 className="font-weight-bold mb20 text-info">Congratulations!!!</h2>
-              <h5 className="font-weight-bold mb20">You Have Donated To This Active Campaign</h5>
-              <a
-                href="https://eraswap.life/access-my-wallet"
-                className="btn btn-default btn-yellow mb20 text-white"
-                onClick={this.handleClose1}
-              >
-                OK
-              </a>
-            </Modal.Body>
-          </Modal>
         </main>
-      </>
+       ):<div className="error"> </div>}
+    </div>
     );
-  }
 }
