@@ -8,6 +8,7 @@ import { Button, Card, ProgressBar } from 'react-bootstrap';
 import { ethers } from 'ethers';
 import { renderTimestampRemaining, timeStamptodays } from '../../utils';
 import Swal from 'sweetalert2';
+import Admin from './Admin';
 
 type DataType = {
   title?: string;
@@ -521,6 +522,7 @@ export function CampaignDetails() {
                       >
                         Claim Now
                       </Button>
+                      <Admin Hash={hash} />
                     </div>
                   </div>
                 </div>
