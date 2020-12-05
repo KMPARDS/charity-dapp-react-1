@@ -105,12 +105,17 @@ export class ExploreCampaign extends Component<State> {
                                 <i className="fa fa-heart text-danger" aria-hidden="true"></i> {ele[5]} {' '}
                                 Supporters{' '}
                               </div>
-                            </div>
+                            </div> <br/>
+
                             <Link to={"/CampaignDetails/" + ele[6]} className="get-started-btn btn-yellow scrollto btn btn-lg text-center ">
                               See Campaign
-                            </Link>
+                            </Link> <br/>
+                            {ele[7]?
+                            <span className="badge badge-success mx-auto" style={{background :'#28A745'}}>Campaign Approved</span> : 
+                            <span className="badge badge-danger mx-auto" style={{background :'#DC3545'}}>Campaign Not Approved yet</span> }
                             <div className="card-footer"><small className="text-muted">{ele[1]}</small> </div>
-                          </div>
+                            </div>
+                       
                         </div>
                       </div>
                           )}

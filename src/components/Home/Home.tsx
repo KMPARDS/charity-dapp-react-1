@@ -9,15 +9,17 @@ import { timeStamptodays } from '../../utils';
 type State = {
   bunchModal: boolean;
   bunchModal1: boolean,
-  allCampaign : any[]
+  allCampaign : any[],
+  charityPool : number;
 };
 export class Home extends Component<State> {
   state: State = {
     bunchModal: false,
     bunchModal1: false,
-    allCampaign :[]
-
+    allCampaign :[],
+    charityPool : 0,
   };
+
   handleClose = () => {
     this.setState({
       bunchModal: false,
@@ -28,8 +30,6 @@ export class Home extends Component<State> {
       bunchModal: true,
     });
   };
-
-
   handleClose1 = () => {
     this.setState({
       bunchModal1: false,
@@ -42,8 +42,12 @@ export class Home extends Component<State> {
   };
 
   getCampaign = async () => {
+    const getPool = await window.charityInstance.charityPoolDonations;
+    console.log(getPool); 
+    
+      // const pool = ethers.utils.formatEther(getPool);
       const filter = window.charityInstance.filters.ProposalAproved(null,null, null);
-      const logs = await window.charityInstance.queryFilter(filter);
+      const logs = await window.charityInstance.queryFilter(filter); 
       const parseLogs = logs.map((log) => window.charityInstance.interface.parseLog(log));
       const campaignAll = parseLogs.map((ele) => ele.args[0]);
       console.log('All :', campaignAll);
@@ -128,7 +132,7 @@ export class Home extends Component<State> {
                           Supporters{' '}
                         </div>
                       </div>
-                      <Link to={"/CampaignDetails/" + ele[6]} className="get-started-btn btn-yellow scrollto btn btn-lg text-center ">
+                      <Link to={"/CampaignDetails/" + ele[6]} className="ml-auto get-started-btn btn-yellow scrollto btn btn-lg text-center ">
                         See Campaign
                       </Link>
                       <div className="card-footer"><small className="text-muted">{ele[1]}</small> </div>
