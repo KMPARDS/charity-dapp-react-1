@@ -45,7 +45,7 @@ interface CharityDappCharityDappInterface extends ethers.utils.Interface {
     "resolveUsernameStrict(address)": FunctionFragment;
     "setAdmin(address)": FunctionFragment;
     "setKycDapp(address)": FunctionFragment;
-    "support(bytes32)": FunctionFragment;
+    "supportUser(bytes32,address)": FunctionFragment;
     "timeallyClub()": FunctionFragment;
     "timeallyManager()": FunctionFragment;
     "timeallyPromotionalBucket()": FunctionFragment;
@@ -117,7 +117,10 @@ interface CharityDappCharityDappInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setAdmin", values: [string]): string;
   encodeFunctionData(functionFragment: "setKycDapp", values: [string]): string;
-  encodeFunctionData(functionFragment: "support", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "supportUser",
+    values: [BytesLike, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "timeallyClub",
     values?: undefined
@@ -194,7 +197,10 @@ interface CharityDappCharityDappInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setAdmin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setKycDapp", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "support", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "supportUser",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "timeallyClub",
     data: BytesLike
@@ -323,10 +329,10 @@ export class CharityDappCharityDapp extends Contract {
       fullExtraction: boolean;
       proposalApproved: boolean;
       fundRaisingDeadline: BigNumber;
-      endTime: BigNumber;
       fundingGoal: BigNumber;
       raisedFunds: BigNumber;
       claimedFunds: BigNumber;
+      support: BigNumber;
       0: string;
       1: string;
       2: string;
@@ -349,10 +355,10 @@ export class CharityDappCharityDapp extends Contract {
       fullExtraction: boolean;
       proposalApproved: boolean;
       fundRaisingDeadline: BigNumber;
-      endTime: BigNumber;
       fundingGoal: BigNumber;
       raisedFunds: BigNumber;
       claimedFunds: BigNumber;
+      support: BigNumber;
       0: string;
       1: string;
       2: string;
@@ -554,18 +560,20 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    support(
+    supportUser(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<{
-      0: BigNumber;
+      0: boolean;
     }>;
 
-    "support(bytes32)"(
+    "supportUser(bytes32,address)"(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<{
-      0: BigNumber;
+      0: boolean;
     }>;
 
     timeallyClub(
@@ -697,10 +705,10 @@ export class CharityDappCharityDapp extends Contract {
     fullExtraction: boolean;
     proposalApproved: boolean;
     fundRaisingDeadline: BigNumber;
-    endTime: BigNumber;
     fundingGoal: BigNumber;
     raisedFunds: BigNumber;
     claimedFunds: BigNumber;
+    support: BigNumber;
     0: string;
     1: string;
     2: string;
@@ -723,10 +731,10 @@ export class CharityDappCharityDapp extends Contract {
     fullExtraction: boolean;
     proposalApproved: boolean;
     fundRaisingDeadline: BigNumber;
-    endTime: BigNumber;
     fundingGoal: BigNumber;
     raisedFunds: BigNumber;
     claimedFunds: BigNumber;
+    support: BigNumber;
     0: string;
     1: string;
     2: string;
@@ -861,12 +869,17 @@ export class CharityDappCharityDapp extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  support(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "support(bytes32)"(
+  supportUser(
     arg0: BytesLike,
+    arg1: string,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<boolean>;
+
+  "supportUser(bytes32,address)"(
+    arg0: BytesLike,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   timeallyClub(overrides?: CallOverrides): Promise<string>;
 
@@ -963,10 +976,10 @@ export class CharityDappCharityDapp extends Contract {
       fullExtraction: boolean;
       proposalApproved: boolean;
       fundRaisingDeadline: BigNumber;
-      endTime: BigNumber;
       fundingGoal: BigNumber;
       raisedFunds: BigNumber;
       claimedFunds: BigNumber;
+      support: BigNumber;
       0: string;
       1: string;
       2: string;
@@ -989,10 +1002,10 @@ export class CharityDappCharityDapp extends Contract {
       fullExtraction: boolean;
       proposalApproved: boolean;
       fundRaisingDeadline: BigNumber;
-      endTime: BigNumber;
       fundingGoal: BigNumber;
       raisedFunds: BigNumber;
       claimedFunds: BigNumber;
+      support: BigNumber;
       0: string;
       1: string;
       2: string;
@@ -1124,12 +1137,17 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    support(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "support(bytes32)"(
+    supportUser(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<boolean>;
+
+    "supportUser(bytes32,address)"(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     timeallyClub(overrides?: CallOverrides): Promise<string>;
 
@@ -1383,10 +1401,15 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    support(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "support(bytes32)"(
+    supportUser(
       arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "supportUser(bytes32,address)"(
+      arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1628,13 +1651,15 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    support(
+    supportUser(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "support(bytes32)"(
+    "supportUser(bytes32,address)"(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

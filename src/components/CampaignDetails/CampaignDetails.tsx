@@ -157,12 +157,12 @@ export function CampaignDetails()  {
         cancelButtonText: 'cancel',
         confirmButtonText: "Confirm",
         showLoaderOnConfirm: true,
-        preConfirm: async (val) => {
-          return await window.charityInstance.connect(window.wallet).donate(hash,{value: ethers.utils.parseEther(val)})
+        preConfirm:  (val) => {
+          return  window.charityInstance.connect(window.wallet).donate(hash,{value: ethers.utils.parseEther(val)})
           .then( res => {
             Swal.fire({title : 'Good job!',
                        icon : 'success',
-                       text : 'You have post your comment '})
+                       text : `You have donated ${val} ES `})
           },e =>Swal.fire('Oops...!', `${JSON.stringify(e)}`, 'error'));
           // .catch(async ()=>{
           //   const add = (window.wallet.address)?window.wallet.address:(await window.wallet.getAddress());
@@ -349,7 +349,7 @@ export function CampaignDetails()  {
                         {recent.map((ele) => {
                           return (
                           <li> 
-                            <span className="donor-name"> {ele[1]}	</span>
+                            <span title={ele[1]} className="donor-name d-inline-block text-truncate " style={{maxWidth : '200px'}}> {ele[1]}	</span>
                             <span className="contributed-amt pull-right"><i className="fa fa-inr"></i>{ethers.utils.formatEther(ele[2])} &nbsp; ES</span>
                             {/* <div className="blackquote"><i className="fa fa-clock-o" aria-hidden="true"></i> 2 days ago</div>             */}
                           </li>
