@@ -2,126 +2,259 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { ethers, EventFilter, Signer, BigNumber, BigNumberish, PopulatedTransaction } from 'ethers';
+import {
+  ethers,
+  EventFilter,
+  Signer,
+  BigNumber,
+  BigNumberish,
+  PopulatedTransaction,
+} from "ethers";
 import {
   Contract,
   ContractTransaction,
   Overrides,
   PayableOverrides,
   CallOverrides,
-} from '@ethersproject/contracts';
-import { BytesLike } from '@ethersproject/bytes';
-import { Listener, Provider } from '@ethersproject/providers';
-import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
+} from "@ethersproject/contracts";
+import {BytesLike} from "@ethersproject/bytes";
+import {Listener, Provider} from "@ethersproject/providers";
+import {FunctionFragment, EventFragment, Result} from "@ethersproject/abi";
 
 interface CharityDappCharityDappInterface extends ethers.utils.Interface {
   functions: {
-    'Admin(address)': FunctionFragment;
-    'CharityPool(bytes32,uint256)': FunctionFragment;
-    'Support(bytes32)': FunctionFragment;
-    'addComments(bytes32,string)': FunctionFragment;
-    'addToCharityPool()': FunctionFragment;
-    'approveProposal(bytes32)': FunctionFragment;
-    'campaigns(bytes32)': FunctionFragment;
-    'claimFunds(bytes32)': FunctionFragment;
-    'dayswappers()': FunctionFragment;
-    'donate(bytes32)': FunctionFragment;
-    'kycDapp()': FunctionFragment;
-    'newCampaign(string,string,uint256,bool,uint256)': FunctionFragment;
-    'nrtManager()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'prepaidEs()': FunctionFragment;
-    'randomnessManager()': FunctionFragment;
-    'resolveAddress(bytes32)': FunctionFragment;
-    'resolveAddressStrict(bytes32)': FunctionFragment;
-    'resolveUsername(address)': FunctionFragment;
-    'resolveUsernameStrict(address)': FunctionFragment;
-    'setAdmin(address)': FunctionFragment;
-    'setKycDapp(address)': FunctionFragment;
-    'supportUser(bytes32,address)': FunctionFragment;
-    'timeallyClub()': FunctionFragment;
-    'timeallyManager()': FunctionFragment;
-    'timeallyPromotionalBucket()': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'validatorManager()': FunctionFragment;
+    "Admin(address)": FunctionFragment;
+    "CharityPool(bytes32,uint256)": FunctionFragment;
+    "Support(bytes32)": FunctionFragment;
+    "addComments(bytes32,string)": FunctionFragment;
+    "addToCharityPool()": FunctionFragment;
+    "approveProposal(bytes32)": FunctionFragment;
+    "campaigns(bytes32)": FunctionFragment;
+    "claimFunds(bytes32)": FunctionFragment;
+    "dayswappers()": FunctionFragment;
+    "donate(bytes32)": FunctionFragment;
+    "donateToCharityPool()": FunctionFragment;
+    "getCharityPool()": FunctionFragment;
+    "kycDapp()": FunctionFragment;
+    "newCampaign(string,string,uint256,bool,uint256)": FunctionFragment;
+    "nrtManager()": FunctionFragment;
+    "owner()": FunctionFragment;
+    "prepaidEs()": FunctionFragment;
+    "randomnessManager()": FunctionFragment;
+    "resolveAddress(bytes32)": FunctionFragment;
+    "resolveAddressStrict(bytes32)": FunctionFragment;
+    "resolveUsername(address)": FunctionFragment;
+    "resolveUsernameStrict(address)": FunctionFragment;
+    "setAdmin(address)": FunctionFragment;
+    "setKycDapp(address)": FunctionFragment;
+    "supportUser(bytes32,address)": FunctionFragment;
+    "timeallyClub()": FunctionFragment;
+    "timeallyManager()": FunctionFragment;
+    "timeallyPromotionalBucket()": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
+    "validatorManager()": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: 'Admin', values: [string]): string;
-  encodeFunctionData(functionFragment: 'CharityPool', values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: 'Support', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'addComments', values: [BytesLike, string]): string;
-  encodeFunctionData(functionFragment: 'addToCharityPool', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'approveProposal', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'campaigns', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'claimFunds', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'dayswappers', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'donate', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'kycDapp', values?: undefined): string;
+  encodeFunctionData(functionFragment: "Admin", values: [string]): string;
   encodeFunctionData(
-    functionFragment: 'newCampaign',
+    functionFragment: "CharityPool",
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "Support", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "addComments",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addToCharityPool",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "approveProposal",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "campaigns",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimFunds",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "dayswappers",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "donate", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "donateToCharityPool",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCharityPool",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "kycDapp", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "newCampaign",
     values: [string, string, BigNumberish, boolean, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: 'nrtManager', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'prepaidEs', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'randomnessManager', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'resolveAddress', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'resolveAddressStrict', values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: 'resolveUsername', values: [string]): string;
-  encodeFunctionData(functionFragment: 'resolveUsernameStrict', values: [string]): string;
-  encodeFunctionData(functionFragment: 'setAdmin', values: [string]): string;
-  encodeFunctionData(functionFragment: 'setKycDapp', values: [string]): string;
-  encodeFunctionData(functionFragment: 'supportUser', values: [BytesLike, string]): string;
-  encodeFunctionData(functionFragment: 'timeallyClub', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'timeallyManager', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'timeallyPromotionalBucket', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'transferOwnership', values: [string]): string;
-  encodeFunctionData(functionFragment: 'validatorManager', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "nrtManager",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "prepaidEs", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "randomnessManager",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "resolveAddress",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "resolveAddressStrict",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "resolveUsername",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "resolveUsernameStrict",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "setAdmin", values: [string]): string;
+  encodeFunctionData(functionFragment: "setKycDapp", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "supportUser",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "timeallyClub",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "timeallyManager",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "timeallyPromotionalBucket",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "validatorManager",
+    values?: undefined
+  ): string;
 
-  decodeFunctionResult(functionFragment: 'Admin', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'CharityPool', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'Support', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'addComments', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'addToCharityPool', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'approveProposal', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'campaigns', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'claimFunds', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'dayswappers', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'donate', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'kycDapp', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'newCampaign', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'nrtManager', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'prepaidEs', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'randomnessManager', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'resolveAddress', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'resolveAddressStrict', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'resolveUsername', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'resolveUsernameStrict', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setAdmin', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setKycDapp', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'supportUser', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'timeallyClub', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'timeallyManager', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'timeallyPromotionalBucket', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'transferOwnership', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'validatorManager', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "Admin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "CharityPool",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "Support", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addComments",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addToCharityPool",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "approveProposal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "campaigns", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "claimFunds", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "dayswappers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "donate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "donateToCharityPool",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCharityPool",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "kycDapp", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "newCampaign",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "nrtManager", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "prepaidEs", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "randomnessManager",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "resolveAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "resolveAddressStrict",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "resolveUsername",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "resolveUsernameStrict",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setAdmin", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setKycDapp", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "supportUser",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "timeallyClub",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "timeallyManager",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "timeallyPromotionalBucket",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "validatorManager",
+    data: BytesLike
+  ): Result;
 
   events: {
-    'Comments(bytes32,address,string,uint256)': EventFragment;
-    'Donated(bytes32,address,uint256)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'ProposalAdded(bytes32,uint256)': EventFragment;
-    'ProposalAproved(bytes32,uint256,string)': EventFragment;
-    'ProposalClaimed(bytes32,uint256,string)': EventFragment;
+    "Comments(bytes32,address,string,uint256)": EventFragment;
+    "Donated(bytes32,address,uint256)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
+    "ProposalAdded(bytes32,address)": EventFragment;
+    "ProposalAproved(bytes32,uint256,string)": EventFragment;
+    "ProposalClaimed(bytes32,uint256,string)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: 'Comments'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Donated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProposalAdded'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProposalAproved'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProposalClaimed'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Comments"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Donated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProposalAdded"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProposalAproved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProposalClaimed"): EventFragment;
 }
 
 export class CharityDappCharityDapp extends Contract {
@@ -145,7 +278,7 @@ export class CharityDappCharityDapp extends Contract {
       0: boolean;
     }>;
 
-    'Admin(address)'(
+    "Admin(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -158,15 +291,18 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    'CharityPool(bytes32,uint256)'(
+    "CharityPool(bytes32,uint256)"(
       _proposalAddress: BytesLike,
       poolDonation: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    Support(_proposalAddress: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
+    Support(
+      _proposalAddress: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    'Support(bytes32)'(
+    "Support(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -177,22 +313,26 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    'addComments(bytes32,string)'(
+    "addComments(bytes32,string)"(
       _proposalAddress: BytesLike,
       message: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    addToCharityPool(overrides?: PayableOverrides): Promise<ContractTransaction>;
+    addToCharityPool(
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
 
-    'addToCharityPool()'(overrides?: PayableOverrides): Promise<ContractTransaction>;
+    "addToCharityPool()"(
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
 
     approveProposal(
       _proposalAddress: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    'approveProposal(bytes32)'(
+    "approveProposal(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -223,7 +363,7 @@ export class CharityDappCharityDapp extends Contract {
       9: BigNumber;
     }>;
 
-    'campaigns(bytes32)'(
+    "campaigns(bytes32)"(
       arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
@@ -254,7 +394,7 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    'claimFunds(bytes32)'(
+    "claimFunds(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
@@ -265,18 +405,41 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'dayswappers()'(
+    "dayswappers()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    donate(_proposalAddress: BytesLike, overrides?: PayableOverrides): Promise<ContractTransaction>;
-
-    'donate(bytes32)'(
+    donate(
       _proposalAddress: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
+
+    "donate(bytes32)"(
+      _proposalAddress: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    donateToCharityPool(
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    "donateToCharityPool()"(
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    getCharityPool(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getCharityPool()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     kycDapp(
       overrides?: CallOverrides
@@ -284,7 +447,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'kycDapp()'(
+    "kycDapp()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -299,7 +462,7 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    'newCampaign(string,string,uint256,bool,uint256)'(
+    "newCampaign(string,string,uint256,bool,uint256)"(
       ipfsHash: string,
       _title: string,
       _fundingGoal: BigNumberish,
@@ -314,7 +477,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'nrtManager()'(
+    "nrtManager()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -332,7 +495,7 @@ export class CharityDappCharityDapp extends Contract {
     /**
      * Returns the address of the current owner.
      */
-    'owner()'(
+    "owner()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -344,7 +507,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'prepaidEs()'(
+    "prepaidEs()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -356,7 +519,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'randomnessManager()'(
+    "randomnessManager()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -369,7 +532,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'resolveAddress(bytes32)'(
+    "resolveAddress(bytes32)"(
       _username: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
@@ -383,7 +546,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'resolveAddressStrict(bytes32)'(
+    "resolveAddressStrict(bytes32)"(
       _username: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
@@ -397,7 +560,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'resolveUsername(address)'(
+    "resolveUsername(address)"(
       _wallet: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -411,7 +574,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'resolveUsernameStrict(address)'(
+    "resolveUsernameStrict(address)"(
       _wallet: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -420,11 +583,20 @@ export class CharityDappCharityDapp extends Contract {
 
     setAdmin(user: string, overrides?: Overrides): Promise<ContractTransaction>;
 
-    'setAdmin(address)'(user: string, overrides?: Overrides): Promise<ContractTransaction>;
+    "setAdmin(address)"(
+      user: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    setKycDapp(_kycDapp: string, overrides?: Overrides): Promise<ContractTransaction>;
+    setKycDapp(
+      _kycDapp: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    'setKycDapp(address)'(_kycDapp: string, overrides?: Overrides): Promise<ContractTransaction>;
+    "setKycDapp(address)"(
+      _kycDapp: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     supportUser(
       arg0: BytesLike,
@@ -434,7 +606,7 @@ export class CharityDappCharityDapp extends Contract {
       0: boolean;
     }>;
 
-    'supportUser(bytes32,address)'(
+    "supportUser(bytes32,address)"(
       arg0: BytesLike,
       arg1: string,
       overrides?: CallOverrides
@@ -448,7 +620,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'timeallyClub()'(
+    "timeallyClub()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -460,7 +632,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'timeallyManager()'(
+    "timeallyManager()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -472,7 +644,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'timeallyPromotionalBucket()'(
+    "timeallyPromotionalBucket()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -481,12 +653,15 @@ export class CharityDappCharityDapp extends Contract {
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
-    transferOwnership(newOwner: string, overrides?: Overrides): Promise<ContractTransaction>;
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
-    'transferOwnership(address)'(
+    "transferOwnership(address)"(
       newOwner: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -497,7 +672,7 @@ export class CharityDappCharityDapp extends Contract {
       0: string;
     }>;
 
-    'validatorManager()'(
+    "validatorManager()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -506,7 +681,7 @@ export class CharityDappCharityDapp extends Contract {
 
   Admin(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-  'Admin(address)'(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  "Admin(address)"(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   CharityPool(
     _proposalAddress: BytesLike,
@@ -514,15 +689,18 @@ export class CharityDappCharityDapp extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  'CharityPool(bytes32,uint256)'(
+  "CharityPool(bytes32,uint256)"(
     _proposalAddress: BytesLike,
     poolDonation: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  Support(_proposalAddress: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
+  Support(
+    _proposalAddress: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  'Support(bytes32)'(
+  "Support(bytes32)"(
     _proposalAddress: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -533,7 +711,7 @@ export class CharityDappCharityDapp extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  'addComments(bytes32,string)'(
+  "addComments(bytes32,string)"(
     _proposalAddress: BytesLike,
     message: string,
     overrides?: Overrides
@@ -541,11 +719,16 @@ export class CharityDappCharityDapp extends Contract {
 
   addToCharityPool(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
-  'addToCharityPool()'(overrides?: PayableOverrides): Promise<ContractTransaction>;
+  "addToCharityPool()"(
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
 
-  approveProposal(_proposalAddress: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
+  approveProposal(
+    _proposalAddress: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  'approveProposal(bytes32)'(
+  "approveProposal(bytes32)"(
     _proposalAddress: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -576,7 +759,7 @@ export class CharityDappCharityDapp extends Contract {
     9: BigNumber;
   }>;
 
-  'campaigns(bytes32)'(
+  "campaigns(bytes32)"(
     arg0: BytesLike,
     overrides?: CallOverrides
   ): Promise<{
@@ -607,25 +790,40 @@ export class CharityDappCharityDapp extends Contract {
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  'claimFunds(bytes32)'(
+  "claimFunds(bytes32)"(
     _proposalAddress: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   dayswappers(overrides?: CallOverrides): Promise<string>;
 
-  'dayswappers()'(overrides?: CallOverrides): Promise<string>;
+  "dayswappers()"(overrides?: CallOverrides): Promise<string>;
 
-  donate(_proposalAddress: BytesLike, overrides?: PayableOverrides): Promise<ContractTransaction>;
-
-  'donate(bytes32)'(
+  donate(
     _proposalAddress: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
+  "donate(bytes32)"(
+    _proposalAddress: BytesLike,
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
+  donateToCharityPool(
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
+  "donateToCharityPool()"(
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
+  getCharityPool(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getCharityPool()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   kycDapp(overrides?: CallOverrides): Promise<string>;
 
-  'kycDapp()'(overrides?: CallOverrides): Promise<string>;
+  "kycDapp()"(overrides?: CallOverrides): Promise<string>;
 
   newCampaign(
     ipfsHash: string,
@@ -636,7 +834,7 @@ export class CharityDappCharityDapp extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  'newCampaign(string,string,uint256,bool,uint256)'(
+  "newCampaign(string,string,uint256,bool,uint256)"(
     ipfsHash: string,
     _title: string,
     _fundingGoal: BigNumberish,
@@ -647,7 +845,7 @@ export class CharityDappCharityDapp extends Contract {
 
   nrtManager(overrides?: CallOverrides): Promise<string>;
 
-  'nrtManager()'(overrides?: CallOverrides): Promise<string>;
+  "nrtManager()"(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Returns the address of the current owner.
@@ -657,43 +855,77 @@ export class CharityDappCharityDapp extends Contract {
   /**
    * Returns the address of the current owner.
    */
-  'owner()'(overrides?: CallOverrides): Promise<string>;
+  "owner()"(overrides?: CallOverrides): Promise<string>;
 
   prepaidEs(overrides?: CallOverrides): Promise<string>;
 
-  'prepaidEs()'(overrides?: CallOverrides): Promise<string>;
+  "prepaidEs()"(overrides?: CallOverrides): Promise<string>;
 
   randomnessManager(overrides?: CallOverrides): Promise<string>;
 
-  'randomnessManager()'(overrides?: CallOverrides): Promise<string>;
+  "randomnessManager()"(overrides?: CallOverrides): Promise<string>;
 
-  resolveAddress(_username: BytesLike, overrides?: CallOverrides): Promise<string>;
+  resolveAddress(
+    _username: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  'resolveAddress(bytes32)'(_username: BytesLike, overrides?: CallOverrides): Promise<string>;
+  "resolveAddress(bytes32)"(
+    _username: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  resolveAddressStrict(_username: BytesLike, overrides?: CallOverrides): Promise<string>;
+  resolveAddressStrict(
+    _username: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  'resolveAddressStrict(bytes32)'(_username: BytesLike, overrides?: CallOverrides): Promise<string>;
+  "resolveAddressStrict(bytes32)"(
+    _username: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   resolveUsername(_wallet: string, overrides?: CallOverrides): Promise<string>;
 
-  'resolveUsername(address)'(_wallet: string, overrides?: CallOverrides): Promise<string>;
+  "resolveUsername(address)"(
+    _wallet: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  resolveUsernameStrict(_wallet: string, overrides?: CallOverrides): Promise<string>;
+  resolveUsernameStrict(
+    _wallet: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  'resolveUsernameStrict(address)'(_wallet: string, overrides?: CallOverrides): Promise<string>;
+  "resolveUsernameStrict(address)"(
+    _wallet: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   setAdmin(user: string, overrides?: Overrides): Promise<ContractTransaction>;
 
-  'setAdmin(address)'(user: string, overrides?: Overrides): Promise<ContractTransaction>;
+  "setAdmin(address)"(
+    user: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  setKycDapp(_kycDapp: string, overrides?: Overrides): Promise<ContractTransaction>;
+  setKycDapp(
+    _kycDapp: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  'setKycDapp(address)'(_kycDapp: string, overrides?: Overrides): Promise<ContractTransaction>;
+  "setKycDapp(address)"(
+    _kycDapp: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  supportUser(arg0: BytesLike, arg1: string, overrides?: CallOverrides): Promise<boolean>;
+  supportUser(
+    arg0: BytesLike,
+    arg1: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
-  'supportUser(bytes32,address)'(
+  "supportUser(bytes32,address)"(
     arg0: BytesLike,
     arg1: string,
     overrides?: CallOverrides
@@ -701,37 +933,40 @@ export class CharityDappCharityDapp extends Contract {
 
   timeallyClub(overrides?: CallOverrides): Promise<string>;
 
-  'timeallyClub()'(overrides?: CallOverrides): Promise<string>;
+  "timeallyClub()"(overrides?: CallOverrides): Promise<string>;
 
   timeallyManager(overrides?: CallOverrides): Promise<string>;
 
-  'timeallyManager()'(overrides?: CallOverrides): Promise<string>;
+  "timeallyManager()"(overrides?: CallOverrides): Promise<string>;
 
   timeallyPromotionalBucket(overrides?: CallOverrides): Promise<string>;
 
-  'timeallyPromotionalBucket()'(overrides?: CallOverrides): Promise<string>;
+  "timeallyPromotionalBucket()"(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
    */
-  transferOwnership(newOwner: string, overrides?: Overrides): Promise<ContractTransaction>;
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   /**
    * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
    */
-  'transferOwnership(address)'(
+  "transferOwnership(address)"(
     newOwner: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   validatorManager(overrides?: CallOverrides): Promise<string>;
 
-  'validatorManager()'(overrides?: CallOverrides): Promise<string>;
+  "validatorManager()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     Admin(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-    'Admin(address)'(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    "Admin(address)"(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
     CharityPool(
       _proposalAddress: BytesLike,
@@ -739,15 +974,21 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    'CharityPool(bytes32,uint256)'(
+    "CharityPool(bytes32,uint256)"(
       _proposalAddress: BytesLike,
       poolDonation: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    Support(_proposalAddress: BytesLike, overrides?: CallOverrides): Promise<void>;
+    Support(
+      _proposalAddress: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    'Support(bytes32)'(_proposalAddress: BytesLike, overrides?: CallOverrides): Promise<void>;
+    "Support(bytes32)"(
+      _proposalAddress: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     addComments(
       _proposalAddress: BytesLike,
@@ -755,7 +996,7 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    'addComments(bytes32,string)'(
+    "addComments(bytes32,string)"(
       _proposalAddress: BytesLike,
       message: string,
       overrides?: CallOverrides
@@ -763,11 +1004,14 @@ export class CharityDappCharityDapp extends Contract {
 
     addToCharityPool(overrides?: CallOverrides): Promise<void>;
 
-    'addToCharityPool()'(overrides?: CallOverrides): Promise<void>;
+    "addToCharityPool()"(overrides?: CallOverrides): Promise<void>;
 
-    approveProposal(_proposalAddress: BytesLike, overrides?: CallOverrides): Promise<void>;
+    approveProposal(
+      _proposalAddress: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    'approveProposal(bytes32)'(
+    "approveProposal(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -798,7 +1042,7 @@ export class CharityDappCharityDapp extends Contract {
       9: BigNumber;
     }>;
 
-    'campaigns(bytes32)'(
+    "campaigns(bytes32)"(
       arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
@@ -824,21 +1068,41 @@ export class CharityDappCharityDapp extends Contract {
       9: BigNumber;
     }>;
 
-    claimFunds(_proposalAddress: BytesLike, overrides?: CallOverrides): Promise<void>;
+    claimFunds(
+      _proposalAddress: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    'claimFunds(bytes32)'(_proposalAddress: BytesLike, overrides?: CallOverrides): Promise<void>;
+    "claimFunds(bytes32)"(
+      _proposalAddress: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     dayswappers(overrides?: CallOverrides): Promise<string>;
 
-    'dayswappers()'(overrides?: CallOverrides): Promise<string>;
+    "dayswappers()"(overrides?: CallOverrides): Promise<string>;
 
-    donate(_proposalAddress: BytesLike, overrides?: CallOverrides): Promise<void>;
+    donate(
+      _proposalAddress: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    'donate(bytes32)'(_proposalAddress: BytesLike, overrides?: CallOverrides): Promise<void>;
+    "donate(bytes32)"(
+      _proposalAddress: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    donateToCharityPool(overrides?: CallOverrides): Promise<void>;
+
+    "donateToCharityPool()"(overrides?: CallOverrides): Promise<void>;
+
+    getCharityPool(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getCharityPool()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     kycDapp(overrides?: CallOverrides): Promise<string>;
 
-    'kycDapp()'(overrides?: CallOverrides): Promise<string>;
+    "kycDapp()"(overrides?: CallOverrides): Promise<string>;
 
     newCampaign(
       ipfsHash: string,
@@ -849,7 +1113,7 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    'newCampaign(string,string,uint256,bool,uint256)'(
+    "newCampaign(string,string,uint256,bool,uint256)"(
       ipfsHash: string,
       _title: string,
       _fundingGoal: BigNumberish,
@@ -860,7 +1124,7 @@ export class CharityDappCharityDapp extends Contract {
 
     nrtManager(overrides?: CallOverrides): Promise<string>;
 
-    'nrtManager()'(overrides?: CallOverrides): Promise<string>;
+    "nrtManager()"(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Returns the address of the current owner.
@@ -870,46 +1134,74 @@ export class CharityDappCharityDapp extends Contract {
     /**
      * Returns the address of the current owner.
      */
-    'owner()'(overrides?: CallOverrides): Promise<string>;
+    "owner()"(overrides?: CallOverrides): Promise<string>;
 
     prepaidEs(overrides?: CallOverrides): Promise<string>;
 
-    'prepaidEs()'(overrides?: CallOverrides): Promise<string>;
+    "prepaidEs()"(overrides?: CallOverrides): Promise<string>;
 
     randomnessManager(overrides?: CallOverrides): Promise<string>;
 
-    'randomnessManager()'(overrides?: CallOverrides): Promise<string>;
+    "randomnessManager()"(overrides?: CallOverrides): Promise<string>;
 
-    resolveAddress(_username: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-    'resolveAddress(bytes32)'(_username: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-    resolveAddressStrict(_username: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-    'resolveAddressStrict(bytes32)'(
+    resolveAddress(
       _username: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    resolveUsername(_wallet: string, overrides?: CallOverrides): Promise<string>;
+    "resolveAddress(bytes32)"(
+      _username: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    'resolveUsername(address)'(_wallet: string, overrides?: CallOverrides): Promise<string>;
+    resolveAddressStrict(
+      _username: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    resolveUsernameStrict(_wallet: string, overrides?: CallOverrides): Promise<string>;
+    "resolveAddressStrict(bytes32)"(
+      _username: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    'resolveUsernameStrict(address)'(_wallet: string, overrides?: CallOverrides): Promise<string>;
+    resolveUsername(
+      _wallet: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "resolveUsername(address)"(
+      _wallet: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    resolveUsernameStrict(
+      _wallet: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "resolveUsernameStrict(address)"(
+      _wallet: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     setAdmin(user: string, overrides?: CallOverrides): Promise<void>;
 
-    'setAdmin(address)'(user: string, overrides?: CallOverrides): Promise<void>;
+    "setAdmin(address)"(user: string, overrides?: CallOverrides): Promise<void>;
 
     setKycDapp(_kycDapp: string, overrides?: CallOverrides): Promise<void>;
 
-    'setKycDapp(address)'(_kycDapp: string, overrides?: CallOverrides): Promise<void>;
+    "setKycDapp(address)"(
+      _kycDapp: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    supportUser(arg0: BytesLike, arg1: string, overrides?: CallOverrides): Promise<boolean>;
+    supportUser(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    'supportUser(bytes32,address)'(
+    "supportUser(bytes32,address)"(
       arg0: BytesLike,
       arg1: string,
       overrides?: CallOverrides
@@ -917,29 +1209,35 @@ export class CharityDappCharityDapp extends Contract {
 
     timeallyClub(overrides?: CallOverrides): Promise<string>;
 
-    'timeallyClub()'(overrides?: CallOverrides): Promise<string>;
+    "timeallyClub()"(overrides?: CallOverrides): Promise<string>;
 
     timeallyManager(overrides?: CallOverrides): Promise<string>;
 
-    'timeallyManager()'(overrides?: CallOverrides): Promise<string>;
+    "timeallyManager()"(overrides?: CallOverrides): Promise<string>;
 
     timeallyPromotionalBucket(overrides?: CallOverrides): Promise<string>;
 
-    'timeallyPromotionalBucket()'(overrides?: CallOverrides): Promise<string>;
+    "timeallyPromotionalBucket()"(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
-    transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
-    'transferOwnership(address)'(newOwner: string, overrides?: CallOverrides): Promise<void>;
+    "transferOwnership(address)"(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     validatorManager(overrides?: CallOverrides): Promise<string>;
 
-    'validatorManager()'(overrides?: CallOverrides): Promise<string>;
+    "validatorManager()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -950,21 +1248,42 @@ export class CharityDappCharityDapp extends Contract {
       time: null
     ): EventFilter;
 
-    Donated(proposalAddress: BytesLike | null, donorAddress: null, amount: null): EventFilter;
+    Donated(
+      proposalAddress: BytesLike | null,
+      donorAddress: null,
+      amount: null
+    ): EventFilter;
 
-    OwnershipTransferred(previousOwner: string | null, newOwner: string | null): EventFilter;
+    OwnershipTransferred(
+      previousOwner: string | null,
+      newOwner: string | null
+    ): EventFilter;
 
-    ProposalAdded(proposalAddress: null, amount: null): EventFilter;
+    ProposalAdded(
+      proposalAddress: null,
+      _campaigner: string | null
+    ): EventFilter;
 
-    ProposalAproved(proposalAddress: null, amount: null, description: null): EventFilter;
+    ProposalAproved(
+      proposalAddress: null,
+      amount: null,
+      description: null
+    ): EventFilter;
 
-    ProposalClaimed(proposalAddress: null, amount: null, description: null): EventFilter;
+    ProposalClaimed(
+      proposalAddress: null,
+      amount: null,
+      description: null
+    ): EventFilter;
   };
 
   estimateGas: {
     Admin(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    'Admin(address)'(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    "Admin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     CharityPool(
       _proposalAddress: BytesLike,
@@ -972,15 +1291,21 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    'CharityPool(bytes32,uint256)'(
+    "CharityPool(bytes32,uint256)"(
       _proposalAddress: BytesLike,
       poolDonation: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    Support(_proposalAddress: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+    Support(
+      _proposalAddress: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    'Support(bytes32)'(_proposalAddress: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+    "Support(bytes32)"(
+      _proposalAddress: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     addComments(
       _proposalAddress: BytesLike,
@@ -988,7 +1313,7 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    'addComments(bytes32,string)'(
+    "addComments(bytes32,string)"(
       _proposalAddress: BytesLike,
       message: string,
       overrides?: Overrides
@@ -996,40 +1321,60 @@ export class CharityDappCharityDapp extends Contract {
 
     addToCharityPool(overrides?: PayableOverrides): Promise<BigNumber>;
 
-    'addToCharityPool()'(overrides?: PayableOverrides): Promise<BigNumber>;
+    "addToCharityPool()"(overrides?: PayableOverrides): Promise<BigNumber>;
 
-    approveProposal(_proposalAddress: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+    approveProposal(
+      _proposalAddress: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    'approveProposal(bytes32)'(
+    "approveProposal(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     campaigns(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
-    'campaigns(bytes32)'(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    "campaigns(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    claimFunds(_proposalAddress: BytesLike, overrides?: PayableOverrides): Promise<BigNumber>;
+    claimFunds(
+      _proposalAddress: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
 
-    'claimFunds(bytes32)'(
+    "claimFunds(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     dayswappers(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'dayswappers()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "dayswappers()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    donate(_proposalAddress: BytesLike, overrides?: PayableOverrides): Promise<BigNumber>;
-
-    'donate(bytes32)'(
+    donate(
       _proposalAddress: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
+    "donate(bytes32)"(
+      _proposalAddress: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
+
+    donateToCharityPool(overrides?: PayableOverrides): Promise<BigNumber>;
+
+    "donateToCharityPool()"(overrides?: PayableOverrides): Promise<BigNumber>;
+
+    getCharityPool(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getCharityPool()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     kycDapp(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'kycDapp()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "kycDapp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     newCampaign(
       ipfsHash: string,
@@ -1040,7 +1385,7 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    'newCampaign(string,string,uint256,bool,uint256)'(
+    "newCampaign(string,string,uint256,bool,uint256)"(
       ipfsHash: string,
       _title: string,
       _fundingGoal: BigNumberish,
@@ -1051,7 +1396,7 @@ export class CharityDappCharityDapp extends Contract {
 
     nrtManager(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'nrtManager()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "nrtManager()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Returns the address of the current owner.
@@ -1061,49 +1406,77 @@ export class CharityDappCharityDapp extends Contract {
     /**
      * Returns the address of the current owner.
      */
-    'owner()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     prepaidEs(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'prepaidEs()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "prepaidEs()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     randomnessManager(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'randomnessManager()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "randomnessManager()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    resolveAddress(_username: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    'resolveAddress(bytes32)'(_username: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    resolveAddressStrict(_username: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    'resolveAddressStrict(bytes32)'(
+    resolveAddress(
       _username: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    resolveUsername(_wallet: string, overrides?: CallOverrides): Promise<BigNumber>;
+    "resolveAddress(bytes32)"(
+      _username: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    'resolveUsername(address)'(_wallet: string, overrides?: CallOverrides): Promise<BigNumber>;
+    resolveAddressStrict(
+      _username: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    resolveUsernameStrict(_wallet: string, overrides?: CallOverrides): Promise<BigNumber>;
+    "resolveAddressStrict(bytes32)"(
+      _username: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    'resolveUsernameStrict(address)'(
+    resolveUsername(
+      _wallet: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "resolveUsername(address)"(
+      _wallet: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    resolveUsernameStrict(
+      _wallet: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "resolveUsernameStrict(address)"(
       _wallet: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     setAdmin(user: string, overrides?: Overrides): Promise<BigNumber>;
 
-    'setAdmin(address)'(user: string, overrides?: Overrides): Promise<BigNumber>;
+    "setAdmin(address)"(
+      user: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     setKycDapp(_kycDapp: string, overrides?: Overrides): Promise<BigNumber>;
 
-    'setKycDapp(address)'(_kycDapp: string, overrides?: Overrides): Promise<BigNumber>;
+    "setKycDapp(address)"(
+      _kycDapp: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    supportUser(arg0: BytesLike, arg1: string, overrides?: CallOverrides): Promise<BigNumber>;
+    supportUser(
+      arg0: BytesLike,
+      arg1: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    'supportUser(bytes32,address)'(
+    "supportUser(bytes32,address)"(
       arg0: BytesLike,
       arg1: string,
       overrides?: CallOverrides
@@ -1111,35 +1484,49 @@ export class CharityDappCharityDapp extends Contract {
 
     timeallyClub(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'timeallyClub()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "timeallyClub()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     timeallyManager(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'timeallyManager()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "timeallyManager()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     timeallyPromotionalBucket(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'timeallyPromotionalBucket()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "timeallyPromotionalBucket()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
-    transferOwnership(newOwner: string, overrides?: Overrides): Promise<BigNumber>;
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
-    'transferOwnership(address)'(newOwner: string, overrides?: Overrides): Promise<BigNumber>;
+    "transferOwnership(address)"(
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     validatorManager(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'validatorManager()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "validatorManager()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    Admin(arg0: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    Admin(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    'Admin(address)'(arg0: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "Admin(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     CharityPool(
       _proposalAddress: BytesLike,
@@ -1147,15 +1534,18 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    'CharityPool(bytes32,uint256)'(
+    "CharityPool(bytes32,uint256)"(
       _proposalAddress: BytesLike,
       poolDonation: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    Support(_proposalAddress: BytesLike, overrides?: Overrides): Promise<PopulatedTransaction>;
+    Support(
+      _proposalAddress: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    'Support(bytes32)'(
+    "Support(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -1166,57 +1556,81 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    'addComments(bytes32,string)'(
+    "addComments(bytes32,string)"(
       _proposalAddress: BytesLike,
       message: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    addToCharityPool(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
+    addToCharityPool(
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
 
-    'addToCharityPool()'(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
+    "addToCharityPool()"(
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
 
     approveProposal(
       _proposalAddress: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    'approveProposal(bytes32)'(
+    "approveProposal(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    campaigns(arg0: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    campaigns(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    'campaigns(bytes32)'(arg0: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "campaigns(bytes32)"(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     claimFunds(
       _proposalAddress: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    'claimFunds(bytes32)'(
+    "claimFunds(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     dayswappers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'dayswappers()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "dayswappers()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     donate(
       _proposalAddress: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    'donate(bytes32)'(
+    "donate(bytes32)"(
       _proposalAddress: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
+    donateToCharityPool(
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "donateToCharityPool()"(
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getCharityPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getCharityPool()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     kycDapp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'kycDapp()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "kycDapp()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     newCampaign(
       ipfsHash: string,
@@ -1227,7 +1641,7 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    'newCampaign(string,string,uint256,bool,uint256)'(
+    "newCampaign(string,string,uint256,bool,uint256)"(
       ipfsHash: string,
       _title: string,
       _fundingGoal: BigNumberish,
@@ -1238,7 +1652,7 @@ export class CharityDappCharityDapp extends Contract {
 
     nrtManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'nrtManager()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "nrtManager()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Returns the address of the current owner.
@@ -1248,19 +1662,24 @@ export class CharityDappCharityDapp extends Contract {
     /**
      * Returns the address of the current owner.
      */
-    'owner()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     prepaidEs(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'prepaidEs()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "prepaidEs()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     randomnessManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'randomnessManager()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "randomnessManager()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    resolveAddress(_username: BytesLike, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    resolveAddress(
+      _username: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    'resolveAddress(bytes32)'(
+    "resolveAddress(bytes32)"(
       _username: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1270,14 +1689,17 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    'resolveAddressStrict(bytes32)'(
+    "resolveAddressStrict(bytes32)"(
       _username: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    resolveUsername(_wallet: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    resolveUsername(
+      _wallet: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    'resolveUsername(address)'(
+    "resolveUsername(address)"(
       _wallet: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1287,18 +1709,30 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    'resolveUsernameStrict(address)'(
+    "resolveUsernameStrict(address)"(
       _wallet: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    setAdmin(user: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+    setAdmin(
+      user: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    'setAdmin(address)'(user: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+    "setAdmin(address)"(
+      user: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    setKycDapp(_kycDapp: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+    setKycDapp(
+      _kycDapp: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    'setKycDapp(address)'(_kycDapp: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+    "setKycDapp(address)"(
+      _kycDapp: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     supportUser(
       arg0: BytesLike,
@@ -1306,7 +1740,7 @@ export class CharityDappCharityDapp extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    'supportUser(bytes32,address)'(
+    "supportUser(bytes32,address)"(
       arg0: BytesLike,
       arg1: string,
       overrides?: CallOverrides
@@ -1314,31 +1748,42 @@ export class CharityDappCharityDapp extends Contract {
 
     timeallyClub(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'timeallyClub()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "timeallyClub()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     timeallyManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'timeallyManager()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "timeallyManager()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    timeallyPromotionalBucket(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    timeallyPromotionalBucket(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    'timeallyPromotionalBucket()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "timeallyPromotionalBucket()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
-    transferOwnership(newOwner: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
-    'transferOwnership(address)'(
+    "transferOwnership(address)"(
       newOwner: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     validatorManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'validatorManager()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "validatorManager()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }
