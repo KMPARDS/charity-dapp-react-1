@@ -1,46 +1,70 @@
 import React, { Component } from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
-import { ProgressBar } from 'react-bootstrap';
+import { Button, ProgressBar, Spinner } from 'react-bootstrap';
 import { ethers } from 'ethers';
 import { timeStamptodays } from '../../utils';
+import Swal from 'sweetalert2';
 type State = {
-  bunchModal: boolean;
-  bunchModal1: boolean;
+  spin: boolean;
   allCampaign: any[];
   charityPool: number;
 };
 export class Home extends Component<State> {
   state: State = {
-    bunchModal: false,
-    bunchModal1: false,
+    spin : true,
     allCampaign: [],
     charityPool: 0,
   };
-
-  handleClose = () => {
-    this.setState({
-      bunchModal: false,
-    });
+  poolDonation = async () => {
+    if (window.wallet) {
+      // const A = await window.charityInstance.connect(window.wallet).populateTransaction.addComments(hash,comment);
+      // console.log("call : ",A);
+      Swal.fire({
+        title: 'Nice !',
+        text: 'Please enter amount',
+        input: 'number',
+        showCancelButton: true,
+        cancelButtonText: 'cancel',
+        confirmButtonText: 'Confirm',
+        showLoaderOnConfirm: true,
+        preConfirm: (val) => {
+          return window.charityInstance
+            .connect(window.wallet)
+            .donateToCharityPool( { value: ethers.utils.parseEther(val) })
+            .then(
+              () => {
+                Swal.fire({
+                  title: 'Good job!',
+                  icon: 'success',
+                  text: `You have donated ${val} ES `,
+                });
+              },
+              (e) => Swal.fire('Oops...!', `${JSON.stringify(e)}`, 'error')
+            );
+          // .catch(async ()=>{
+          //   const add = (window.wallet.address)?window.wallet.address:(await window.wallet.getAddress());
+          //   const x = new ethers.VoidSigner(add, window.provider);
+          //   try {
+          //     const A = await window.charityInstance.connect(x).estimateGas.donate(hash,{value: ethers.utils.parseEther(val)})
+          //     console.log(A);
+          //   } catch (e) {
+          //     console.log('Error is : ', e);
+          //     Swal.fire('Oops...!', `${e}`, 'error')
+          //   }
+          // });
+        },
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Please Connect to wallet ...',
+      });
+    }
   };
-  handleShow = () => {
-    this.setState({
-      bunchModal: true,
-    });
-  };
-  handleClose1 = () => {
-    this.setState({
-      bunchModal1: false,
-    });
-  };
-  handleShow1 = () => {
-    this.setState({
-      bunchModal1: true,
-    });
-  };
-
   getCampaign = async () => {
-    // const pool = ethers.utils.formatEther(getPool);
+    const getPool = await window.charityInstance.getCharityPool();
+    const pool = ethers.utils.formatEther(getPool);
     const filter = window.charityInstance.filters.ProposalAproved(null, null, null);
     const logs = await window.charityInstance.queryFilter(filter);
     const parseLogs = logs.map((log) => window.charityInstance.interface.parseLog(log));
@@ -57,12 +81,15 @@ export class Home extends Component<State> {
         return p;
       })
     );
-    this.setState({ ...this.state, allCampaign: detailsAll });
+    this.setState({ ...this.state, allCampaign: detailsAll, charityPool : pool });
     console.log('All :', detailsAll);
   };
 
   componentDidMount = async () => {
-    await this.getCampaign();
+    await this.getCampaign();    
+    this.setState({ ...this.state, spin : false });
+
+
   };
   render() {
     return (
@@ -88,7 +115,7 @@ export class Home extends Component<State> {
                   <Link
                     to="/CreateCampaign"
                     className="get-started-btn btn scrollto btn-lg"
-                    onClick={this.handleShow1}
+                    
                   >
                     Create Your Campaign
                   </Link>
@@ -98,6 +125,7 @@ export class Home extends Component<State> {
           </section>
         </div>
         <main id="main">
+          {this.state.spin ? <Spinner animation="border" style={{ position:'absolute', left: "50%",margin : '20px'}} />:
           <section id="services" className="services about">
             <div className="container" data-aos="fade-up">
               <div className="row justify-content-center ">
@@ -154,9 +182,22 @@ export class Home extends Component<State> {
                   );
                 })}
               </div>
+            </div><hr/> 
+          <div className="container" data-aos="fade-up">
+            
+              <div className="row justify-content-center ">
+                <div
+                  className="col-lg-8 pt-4 pt-lg-0 order-2 order-lg-1 content text-center mx"
+                  data-aos="fade-right"
+                  data-aos-delay="100"
+                >
+                  <h3>Charity Pool</h3>
+                </div>
+              </div>
+              <h4 className="text-center">Total collection by charity pool is : <b>{this.state.charityPool} {'  '} ES</b></h4>
+              <Button style={{ position:'absolute', left: "45%" }} onClick={this.poolDonation} className="text-center btn btn-lg">Donate to pool </Button>
             </div>
-          </section>
-
+          </section>}
           <section id="aboutus" className="features about">
             <div className="container" data-aos="fade-up">
               <div className="row justify-content-center ">
