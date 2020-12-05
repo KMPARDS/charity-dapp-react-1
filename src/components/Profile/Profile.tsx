@@ -56,9 +56,12 @@ export class Profile extends Component<State> {
                           <div className="container" data-aos="fade-up">
                             <div className="row">
                               <div className="col-lg-12 mt20">
-                              <div className="alert alert-secondary" role="alert">
-                                <h4 className="Font-weight-bold">WALLET ADDRESS: <small className="">0X34C4204B0F808103F69EE547AB9567E2D0</small></h4>
-                              </div>
+                                <div className="alert alert-secondary" role="alert">
+                                  <h4 className="Font-weight-bold">
+                                    WALLET ADDRESS:{' '}
+                                    <small className="">0X34C4204B0F808103F69EE547AB9567E2D0</small>
+                                  </h4>
+                                </div>
                               </div>
                               <div className="col-lg-12 mt40">
                                 <h4 className="font-weight-bold mb20"> Your Participation</h4>
@@ -252,9 +255,6 @@ export class Profile extends Component<State> {
                                 </div>
                               </div>
                             </div>
-                           
-
-
 
                             <div className="row mt40">
                               <div className="col-lg-12">
@@ -449,7 +449,6 @@ export class Profile extends Component<State> {
                                 </div>
                               </div>
                             </div>
-                         
                           </div>
                         </div>
                       </Card.Body>

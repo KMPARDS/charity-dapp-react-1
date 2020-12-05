@@ -3,7 +3,7 @@ import { Deferrable } from '@ethersproject/properties';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Logger } from '@ethersproject/logger';
 
-import {  addresses,utils } from 'eraswap-sdk';
+import { addresses, utils } from 'eraswap-sdk';
 // import {  parseEthersJsError } from 'eraswap-sdk/utils';
 
 import {
@@ -14,7 +14,7 @@ import {
   hexZeroPad,
 } from 'ethers/lib/utils';
 
-const {parseEthersJsError} = utils;
+const { parseEthersJsError } = utils;
 
 const logger = new Logger(version);
 
@@ -64,9 +64,7 @@ async function resolveAddress(
   }
 
   if (addr === ethers.constants.AddressZero) {
-    logger.throwError(
-      `The kycname ${name} does not resolve to a non-zero address`
-    );
+    logger.throwError(`The kycname ${name} does not resolve to a non-zero address`);
   }
 
   return _this.formatter.address(addr);
@@ -94,9 +92,7 @@ async function resolveUsername(
   );
 
   if (name === '') {
-    logger.throwError(
-      `The address ${address} does not resolve to a non-empty username`
-    );
+    logger.throwError(`The address ${address} does not resolve to a non-empty username`);
   }
 
   // Make sure the reverse record matches the foward record
@@ -122,15 +118,11 @@ export class CustomFallbackProvider extends providers.FallbackProvider {
     return await this.resolveUsername(address);
   }
 
-  async resolveAddress(
-    name: string | Promise<string>
-  ): Promise<string | never> {
+  async resolveAddress(name: string | Promise<string>): Promise<string | never> {
     return resolveAddress(this, name);
   }
 
-  async resolveUsername(
-    address: string | Promise<string>
-  ): Promise<string | never> {
+  async resolveUsername(address: string | Promise<string>): Promise<string | never> {
     return await resolveUsername(this, address);
   }
 }
@@ -148,15 +140,11 @@ export class CustomJsonRpcProvider extends providers.StaticJsonRpcProvider {
     return await this.resolveUsername(address);
   }
 
-  async resolveAddress(
-    name: string | Promise<string>
-  ): Promise<string | never> {
+  async resolveAddress(name: string | Promise<string>): Promise<string | never> {
     return resolveAddress(this, name);
   }
 
-  async resolveUsername(
-    address: string | Promise<string>
-  ): Promise<string | never> {
+  async resolveUsername(address: string | Promise<string>): Promise<string | never> {
     return await resolveUsername(this, address);
   }
 
@@ -190,9 +178,7 @@ export class CustomJsonRpcProvider extends providers.StaticJsonRpcProvider {
     }
   }
 
-  async estimateGas(
-    transaction: Deferrable<TransactionRequest>
-  ): Promise<BigNumber> {
+  async estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber> {
     try {
       const resp = await super.estimateGas(transaction);
       // console.log(resp);
@@ -253,14 +239,11 @@ export class CustomProvider extends CustomFallbackProvider {
     switch (network) {
       case 'mainnet':
         const providers = [
-          new CustomJsonRpcProvider(
-            'https://rpc-mumbai.mainnet.eraswap.network',
-            {
-              name: 'EraSwapNetwork',
-              chainId: 5197,
-              ensAddress: addresses['production'].ESN.kycdapp,
-            }
-          ),
+          new CustomJsonRpcProvider('https://rpc-mumbai.mainnet.eraswap.network', {
+            name: 'EraSwapNetwork',
+            chainId: 5197,
+            ensAddress: addresses['production'].ESN.kycdapp,
+          }),
           new CustomJsonRpcProvider('https://mainnet.eraswap.network', {
             name: 'EraSwapNetwork',
             chainId: 5197,
@@ -279,9 +262,7 @@ export class CustomProvider extends CustomFallbackProvider {
         ]);
         break;
       default:
-        throw new Error(
-          `CustomProvider needs 'mainnet' or 'testnet' as constructor arg`
-        );
+        throw new Error(`CustomProvider needs 'mainnet' or 'testnet' as constructor arg`);
     }
   }
 }

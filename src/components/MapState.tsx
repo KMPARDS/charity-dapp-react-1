@@ -1,40 +1,39 @@
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 
-
 type MapState = {
   userName: string;
   userAge: string;
   userDesignation: string;
-  Category : string;
-  Organization:string;
+  Category: string;
+  Organization: string;
   Address: string;
   RaisedFund: string;
-  Benificery : string;
-  Img : string[];
-  Description : string;
-  Stakes : string;
-  stakesTime : string;
-  fullExtraction : boolean;
-  link : string;
-  endTime : string;
+  Benificery: string;
+  Img: string[];
+  Description: string;
+  Stakes: string;
+  stakesTime: string;
+  fullExtraction: boolean;
+  link: string;
+  endTime: string;
 };
 
 const initialState: MapState = {
-    userName: '',
-    userAge: '',
-    userDesignation: '',
-    Category : 'Medical',
-    Organization:'',
-    Address: '',
-    RaisedFund: '5',
-    Benificery : '',
-    Img : ['','',''],
-    Description : '',
-    Stakes : '',
-    stakesTime : '',
-    fullExtraction : false,
-    link : '',
-    endTime:'',
+  userName: '',
+  userAge: '',
+  userDesignation: '',
+  Category: 'Medical',
+  Organization: '',
+  Address: '',
+  RaisedFund: '5',
+  Benificery: '',
+  Img: ['', '', ''],
+  Description: '',
+  Stakes: '',
+  stakesTime: '',
+  fullExtraction: false,
+  link: '',
+  endTime: '',
 };
 
 const initialMapContext: { mapState: MapState; setMapState: React.Dispatch<any> } = {
@@ -44,12 +43,11 @@ const initialMapContext: { mapState: MapState; setMapState: React.Dispatch<any> 
 
 const MapContext = createContext(initialMapContext);
 
-
 const reducer = (state: MapState, action: any) => {
-      return {
-        ...state,
-        ...action,
-      };
+  return {
+    ...state,
+    ...action,
+  };
 };
 interface MapProviderProps {
   children?: ReactNode;
