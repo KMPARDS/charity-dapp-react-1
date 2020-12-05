@@ -16,15 +16,13 @@ export function routine(fn: Function, msec: number): NodeJS.Timeout {
   }, msec);
 
   return intervalId;
-
 }
-
 
 export function renderSecondsRemaining(numberOfSeconds: number): string {
   const days = Math.floor(numberOfSeconds / 60 / 60 / 24);
   const hours = Math.floor((numberOfSeconds - days * 60 * 60 * 24) / 60 / 60);
   const minutes = Math.floor((numberOfSeconds - days * 60 * 60 * 24 - hours * 60 * 60) / 60);
-  const seconds = numberOfSeconds - days * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60;
+  // const seconds = numberOfSeconds - days * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60;
 
   return `${days} days, ${hours} hours and  ${minutes} minutes `;
 }
@@ -38,7 +36,7 @@ export function renderTimestampRemaining(unixTimestampSeconds: number): string {
 
 export function timeStamptodays(unixTimestampSeconds: number): number {
   const currentTimestamp = Math.round(Date.now() / 1000);
-  let secondsRemaining =  unixTimestampSeconds -currentTimestamp ;
+  let secondsRemaining = unixTimestampSeconds - currentTimestamp;
   if (secondsRemaining < 0) secondsRemaining = 0;
   return Math.floor(secondsRemaining / 60 / 60 / 24);
 }

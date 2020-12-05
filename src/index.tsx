@@ -4,8 +4,7 @@ import './index.css';
 import App from './App';
 import './ethereum/instances';
 import * as serviceWorker from './serviceWorker';
-import { ethers } from 'ethers'; 
-
+import { ethers } from 'ethers';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -32,7 +31,7 @@ window.addEventListener(
       const message = e.data;
       if (message.substring) {
         if (message.substring(0, 2) === '0x') {
-          window.wallet = new ethers.Wallet(message).connect(window.provider)
+          window.wallet = new ethers.Wallet(message).connect(window.provider);
         }
       }
     }, 0);

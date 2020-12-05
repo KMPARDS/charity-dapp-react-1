@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import './Footer.css';
-import { Link } from 'react-router-dom';
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
 export class Footer extends Component {
   render() {
@@ -12,43 +10,68 @@ export class Footer extends Component {
             <div className="row">
               <div className="col-lg-3 col-md-6">
                 <div className="footer-info">
-                  <img src={process.env.PUBLIC_URL + "/assets/img/logo.png"} width="150" />
+                  <img
+                    alt="img"
+                    src={process.env.PUBLIC_URL + '/assets/img/logo.png'}
+                    width="150"
+                  />
 
                   <div className="social-links mt-3">
-                    <a href="https://www.facebook.com/eraswap" target="_blank">
+                    <a
+                      href="https://www.facebook.com/eraswap"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa fa-facebook"></i>
                     </a>
-                    <a href="https://www.linkedin.com/company/eraswap/" target="_blank">
+                    <a
+                      href="https://www.linkedin.com/company/eraswap/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa fa-linkedin"></i>
                     </a>
-                    <a href="https://www.instagram.com/eraswap/?hl=en" target="_blank">
+                    <a
+                      href="https://www.instagram.com/eraswap/?hl=en"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa fa-instagram"></i>
                     </a>
-                    <a href="https://twitter.com/EraSwapTech" target="_blank">
+                    <a
+                      href="https://twitter.com/EraSwapTech"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa fa-twitter"></i>
                     </a>
 
-                    <a href="https://medium.com/@eraswap" target="_blank">
+                    <a href="https://medium.com/@eraswap" target="_blank" rel="noopener noreferrer">
                       <i className="fa fa-medium"></i>
                     </a>
 
-                    <a href="https://eraswap.tumblr.com/" target="_blank">
+                    <a href="https://eraswap.tumblr.com/" target="_blank" rel="noopener noreferrer">
                       <i className="fa fa-tumblr"></i>
                     </a>
 
-                    <a href="https://t.me/eraswap" target="_blank">
+                    <a href="https://t.me/eraswap" target="_blank" rel="noopener noreferrer">
                       <i className="fa fa-telegram"></i>
                     </a>
 
-                    <a href="https://github.com/KMPARDS" target="_blank">
+                    <a href="https://github.com/KMPARDS" target="_blank" rel="noopener noreferrer">
                       <i className="fa fa-github"></i>
                     </a>
-                    <a href="https://www.reddit.com/user/EraSwap" target="_blank">
+                    <a
+                      href="https://www.reddit.com/user/EraSwap"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa fa-reddit"></i>
                     </a>
                     <a
                       href="https://www.youtube.com/channel/UCGCP4f5DF1W6sbCjS6y3T1g?view_as=subscriber"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <i className="fa fa-youtube"></i>
                     </a>
@@ -62,20 +85,24 @@ export class Footer extends Component {
                   <li>
                     <i className="bx bx-chevron-right"></i> <a href="/">Home</a>
                   </li>
-                  <li><i className="bx bx-chevron-right"></i> <a href="/#aboutus">About</a></li>
-                  <li><i className="bx bx-chevron-right"></i> <a href="/#why">Why</a></li>
+                  <li>
+                    <i className="bx bx-chevron-right"></i> <a href="/#aboutus">About</a>
+                  </li>
+                  <li>
+                    <i className="bx bx-chevron-right"></i> <a href="/#why">Why</a>
+                  </li>
                 </ul>
               </div>
 
               <div className="col-lg-3 col-md-6 footer-links">
                 <h4>Other Links</h4>
                 <ul>
-                  
                   <li>
                     <i className="bx bx-chevron-right"></i>{' '}
                     <a
                       href="http://eraswaptoken.io/pdf/eraswap-terms-conditions.pdf"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       Eraswap terms & Conditions
                     </a>
@@ -85,8 +112,9 @@ export class Footer extends Component {
                     <a
                       href="https://eraswaptoken.io/pdf/es-statuary-warning.pdf"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
-                     Statuary Warning
+                      Statuary Warning
                     </a>
                   </li>
                   <li>
@@ -94,34 +122,44 @@ export class Footer extends Component {
                     <a
                       href="http://eraswaptoken.io/pdf/era-swap-howey-test-letter-august7-2018.pdf"
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       Howey Test
                     </a>
                   </li>
-                
                 </ul>
               </div>
 
               <div className="col-lg-4 col-md-6 footer-links">
-              <h4>&nbsp;</h4>
+                <h4>&nbsp;</h4>
                 <ul>
-                  
-                  
                   <li>
                     <i className="bx bx-chevron-right"></i>{' '}
-                    <a href="http://eraswaptoken.io/pdf/eraswap_whitepaper.pdf" target="_blank">
+                    <a
+                      href="http://eraswaptoken.io/pdf/eraswap_whitepaper.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Era Swap White Paper
                     </a>
                   </li>
                   <li>
                     <i className="bx bx-chevron-right"></i>{' '}
-                    <a href="pdf/charitydapp-terms-conditions.pdf" target="_blank">
+                    <a
+                      href="pdf/charitydapp-terms-conditions.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Terms & Conditions
                     </a>
                   </li>
                   <li>
                     <i className="bx bx-chevron-right"></i>{' '}
-                    <a href="pdf/Charitydapp-privacy-policy.pdf" target="_blank">
+                    <a
+                      href="pdf/Charitydapp-privacy-policy.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Privacy Policy{' '}
                     </a>
                   </li>

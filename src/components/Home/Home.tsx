@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
-import { Navbar, Nav, NavDropdown, ProgressBar,Button } from 'react-bootstrap';
-import Modal from 'react-bootstrap/Modal';
-import { Form } from 'react-bootstrap';
+import { ProgressBar } from 'react-bootstrap';
+import { ethers } from 'ethers';
+import { timeStamptodays } from '../../utils';
 type State = {
   bunchModal: boolean;
-  bunchModal1: boolean,
+  bunchModal1: boolean;
+  allCampaign: any[];
+  charityPool: number;
 };
 export class Home extends Component<State> {
   state: State = {
     bunchModal: false,
     bunchModal1: false,
+    allCampaign: [],
+    charityPool: 0,
   };
+
   handleClose = () => {
     this.setState({
       bunchModal: false,
@@ -23,8 +28,6 @@ export class Home extends Component<State> {
       bunchModal: true,
     });
   };
-
-
   handleClose1 = () => {
     this.setState({
       bunchModal1: false,
@@ -36,7 +39,34 @@ export class Home extends Component<State> {
     });
   };
 
-  componentDidMount() {}
+  getCampaign = async () => {
+    const getPool = await window.charityInstance.charityPoolDonations;
+    console.log(getPool);
+
+    // const pool = ethers.utils.formatEther(getPool);
+    const filter = window.charityInstance.filters.ProposalAproved(null, null, null);
+    const logs = await window.charityInstance.queryFilter(filter);
+    const parseLogs = logs.map((log) => window.charityInstance.interface.parseLog(log));
+    const campaignAll = parseLogs.map((ele) => ele.args[0]);
+    console.log('All :', campaignAll);
+    const detailsAll = await Promise.all(
+      campaignAll.map(async (ele) => {
+        const x = await window.charityInstance.campaigns(ele);
+        const goal = parseInt(ethers.utils.formatEther(x[6]));
+        const raise = parseInt(ethers.utils.formatEther(x[7]));
+        const time = x[5].toNumber();
+        const support = x[9].toNumber();
+        const p = [x[1], x[2], time, goal, raise, support, ele];
+        return p;
+      })
+    );
+    this.setState({ ...this.state, allCampaign: detailsAll });
+    console.log('All :', detailsAll);
+  };
+
+  componentDidMount = async () => {
+    await this.getCampaign();
+  };
   render() {
     return (
       <>
@@ -52,55 +82,23 @@ export class Home extends Component<State> {
                   </h1>
 
                   <br />
-                  <Link className="get-started-btn btn-yellow btn btn-lg scrollto"  to="/ExploreCampaign">
+                  <Link
+                    className="get-started-btn btn-yellow btn btn-lg scrollto"
+                    to="/ExploreCampaign"
+                  >
                     Explore Campaigns
-                  </Link> 
-                  <Link to="/CreateCampaign" className="get-started-btn btn scrollto btn-lg"  onClick={this.handleShow1}>
+                  </Link>
+                  <Link
+                    to="/CreateCampaign"
+                    className="get-started-btn btn scrollto btn-lg"
+                    onClick={this.handleShow1}
+                  >
                     Create Your Campaign
                   </Link>
                 </div>
               </div>
             </div>
-          </section>  
-
-
-         <Modal show={this.state.bunchModal} onHide={this.handleClose} className="com-modal" >
-            <Modal.Header closeButton>
-             
-            </Modal.Header>
-            <Modal.Body className="text-center" >
-              <h5 className="font-weight-bold mb20">Please First Connect your Wallet for more details / To Donate OR Create Campaigns</h5>
-              <Link to="/ExploreCampaign" className="btn btn-default btn-yellow mb20 text-white"  onClick={this.handleClose}>
-                Connect To Wallet
-            </Link>
-            </Modal.Body>
-          </Modal> 
-
-
-          <Modal show={this.state.bunchModal1} onHide={this.handleClose1} className="com-modal">
-              <Modal.Header closeButton>
-              </Modal.Header>
-              <Modal.Body className="text-center" >
-                <h5 className="font-weight-bold mb20">To create your Charity Campaign follow these simple steps</h5>
-                <ul>
-                  <li><span className="font-weight-bold">Step 1:</span> Go to www.kycdapp.com</li>
-                  <li><span className="font-weight-bold">Step 1:</span> Complete your KYC Level 1</li>
-                  <li><span className="font-weight-bold">Step 1:</span> Complete your KYC Level 2</li>
-                </ul>
-                <p>by listing details about your Charity Campaign</p>
-                <a href="https://kycdapp.com/" target="_blank" className="btn btn-default btn-yellow mb20 mb20 text-white"  onClick={this.handleClose1}>
-                Go to KYC DApp</a>
-                <Link to="/CreateCampaign" className="btn btn-default btn-yellow mb20 mb20 ml10 text-white"  onClick={this.handleClose1}>
-                Create Your Campaign</Link>
-                <div className="alert alert-info" role="alert">
-                <p><span className="font-weight-bold ">NOTE:</span> If you want to list more than 1 charity campaign, then you can list on KYC level 2</p>
-                
-                </div>
-              </Modal.Body>
-          </Modal>
-
-
-
+          </section>
         </div>
         <main id="main">
           <section id="services" className="services about">
@@ -115,157 +113,49 @@ export class Home extends Component<State> {
                 </div>
               </div>
               <div className="row mt40">
-                <div
-                  className="col-lg-4 col-md-4 d-flex align-items-stretch mt-4 mt-md-0"
-                  data-aos="zoom-in"
-                  data-aos-delay="200"
-                >
-                  <div className="icon-box cha-list-box">
-                    <div className="cha-list-box-img">
-                      <img src="assets/img/dubi.jpg" width="100%" className="text-left" />
-                    </div>
-                    <div className="cha-list-box-text mt10">
-                      <h4>
-                        <a href="/CampaignDetails">Children in Need of Supplies Preventing COVID 19</a>
-                      </h4>
-                      <div className="brand-color-1-text text-left amount-raised">
-                        <strong>₹2,171,709 </strong>
-                        <span className="text-dark">Raised out of ₹ 6,00,890</span>
-                      </div>
-                      <ProgressBar animated now={45} variant="info" />
-                      <div className="cha-list-box-footer d-flex flex-column flex-md-row mt10">
-                        <div className="timeleft">
-                          <i className="fa fa-clock-o" aria-hidden="true"></i> 8 Days Left{' '}
-                        </div>
-                        <div className="Suppoter ml-auto">
-                          <i className="fa fa-heart text-danger" aria-hidden="true"></i> 1246
-                          Supporters{' '}
-                        </div>
-                      </div>
-                      <div className="kyclevel d-flex flex-column flex-md-row mt20">
-                        <div className="kyc-level-text font-weight-bold">KYC Level </div>
-                        <div className="">
-                          <img
-                            src="assets/img/kyc-level-1.png"
-                            width="45px"
-                            className="text-left"
+                {this.state.allCampaign.map((ele) => {
+                  return (
+                    <div
+                      className="col-lg-4 col-md-4 d-flex align-items-stretch mt-4 mt-md-0"
+                      data-aos="zoom-in"
+                      data-aos-delay="200"
+                    >
+                      <div className="icon-box cha-list-box">
+                        <div className="cha-list-box-text mt10">
+                          <h4>{ele[0]}</h4>
+                          <div className="brand-color-1-text text-left amount-raised">
+                            <strong>{ele[4]} </strong>
+                            <span className="text-dark">Raised out of {ele[3]}</span>
+                          </div>
+                          <ProgressBar
+                            animated
+                            now={Math.floor((ele[4] * 100) / ele[3])}
+                            variant="info"
                           />
-                          <img
-                            src="assets/img/kyc-level-2.png"
-                            width="45px"
-                            className="text-left"
-                          />
-                          <img
-                            src="assets/img/kyc-level-3.png"
-                            width="45px"
-                            className="text-left"
-                          />
+                          <div className="cha-list-box-footer d-flex flex-column flex-md-row mt10">
+                            <div className="timeleft">
+                              <i className="fa fa-clock-o" aria-hidden="true"></i> &nbsp;{' '}
+                              {timeStamptodays(ele[2])} days remaining{' '}
+                            </div>
+                            <div className="Suppoter ml-auto">
+                              <i className="fa fa-heart text-danger" aria-hidden="true"></i>{' '}
+                              {ele[5]} Supporters{' '}
+                            </div>
+                          </div>
+                          <Link
+                            to={'/CampaignDetails/' + ele[6]}
+                            className="ml-auto get-started-btn btn-yellow scrollto btn btn-lg text-center "
+                          >
+                            See Campaign
+                          </Link>
+                          <div className="card-footer">
+                            <small className="text-muted">{ele[1]}</small>{' '}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                <div
-                  className="col-lg-4 col-md-4 d-flex align-items-stretch mt-4 mt-md-0"
-                  data-aos="zoom-in"
-                  data-aos-delay="200"
-                >
-                  <div className="icon-box cha-list-box">
-                    <div className="cha-list-box-img">
-                      <img src="assets/img/dubi.jpg" width="100%" className="text-left" />
-                    </div>
-                    <div className="cha-list-box-text mt10">
-                      <h4>
-                        <a href="/CampaignDetails">Children in Need of Supplies Preventing COVID 19</a>
-                      </h4>
-                      <div className="brand-color-1-text text-left amount-raised">
-                        <strong>₹2,171,709 </strong>
-                        <span className="text-dark">Raised out of ₹ 6,00,890</span>
-                      </div>
-                      <ProgressBar animated now={45} variant="info" />
-                      <div className="cha-list-box-footer d-flex flex-column flex-md-row mt10">
-                        <div className="timeleft">
-                          <i className="fa fa-clock-o" aria-hidden="true"></i> 8 Days Left{' '}
-                        </div>
-                        <div className="Suppoter ml-auto">
-                          <i className="fa fa-heart text-danger" aria-hidden="true"></i> 1246
-                          Supporters{' '}
-                        </div>
-                      </div>
-                      <div className="kyclevel d-flex flex-column flex-md-row mt20">
-                        <div className="kyc-level-text font-weight-bold">KYC Level </div>
-                        <div className="">
-                          <img
-                            src="assets/img/kyc-level-1.png"
-                            width="45px"
-                            className="text-left"
-                          />
-                          <img
-                            src="assets/img/kyc-level-2.png"
-                            width="45px"
-                            className="text-left"
-                          />
-                          <img
-                            src="assets/img/kyc-level-3.png"
-                            width="45px"
-                            className="text-left"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="col-lg-4 col-md-4 d-flex align-items-stretch mt-4 mt-md-0"
-                  data-aos="zoom-in"
-                  data-aos-delay="200"
-                >
-                  <div className="icon-box cha-list-box">
-                    <div className="cha-list-box-img">
-                      <img src="assets/img/dubi.jpg" width="100%" className="text-left" />
-                    </div>
-                    <div className="cha-list-box-text mt10">
-                      <h4>
-                        <a href="/CampaignDetails">Children in Need of Supplies Preventing COVID 19</a>
-                      </h4>
-                      <div className="brand-color-1-text text-left amount-raised">
-                        <strong>₹2,171,709 </strong>
-                        <span className="text-dark">Raised out of ₹ 6,00,890</span>
-                      </div>
-                      <ProgressBar animated now={45} variant="info" />
-                      <div className="cha-list-box-footer d-flex flex-column flex-md-row mt10">
-                        <div className="timeleft">
-                          <i className="fa fa-clock-o" aria-hidden="true"></i> 8 Days Left{' '}
-                        </div>
-                        <div className="Suppoter ml-auto">
-                          <i className="fa fa-heart text-danger" aria-hidden="true"></i> 1246
-                          Supporters{' '}
-                        </div>
-                      </div>
-                      <div className="kyclevel d-flex flex-column flex-md-row mt20">
-                        <div className="kyc-level-text font-weight-bold">KYC Level</div>
-                        <div className="">
-                          <img
-                            src="assets/img/kyc-level-1.png"
-                            width="45px"
-                            className="text-left"
-                          />
-                          <img
-                            src="assets/img/kyc-level-2.png"
-                            width="45px"
-                            className="text-left"
-                          />
-                          <img
-                            src="assets/img/kyc-level-3.png"
-                            width="45px"
-                            className="text-left"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </div>
           </section>
@@ -348,9 +238,9 @@ export class Home extends Component<State> {
                   data-aos-delay="100"
                 >
                   <div className="icon-box">
-                    <img src="assets/img/blockchain-transparency-01.png" width="150" />
+                    <img alt="img" src="assets/img/blockchain-transparency-01.png" width="150" />
                     <h4>
-                      <a href="">Blockchain Transparency</a>
+                      <a href="/">Blockchain Transparency</a>
                     </h4>
                   </div>
                 </div>
@@ -360,9 +250,13 @@ export class Home extends Component<State> {
                   data-aos-delay="200"
                 >
                   <div className="icon-box">
-                    <img src="assets/img/contribute-with-donations-rates-02.png" width="150" />
+                    <img
+                      alt="img"
+                      src="assets/img/contribute-with-donations-rates-02.png"
+                      width="150"
+                    />
                     <h4>
-                      <a href=""> Contribute with Donations or Rates</a>
+                      <a href="/"> Contribute with Donations or Rates</a>
                     </h4>
                   </div>
                 </div>
@@ -372,9 +266,13 @@ export class Home extends Component<State> {
                   data-aos-delay="300"
                 >
                   <div className="icon-box">
-                    <img src="assets/img/supported-by-era-wap-charity pool-03.png" width="150" />
+                    <img
+                      alt="img"
+                      src="assets/img/supported-by-era-wap-charity pool-03.png"
+                      width="150"
+                    />
                     <h4>
-                      <a href=""> Supported by Era Swap Charity Pool</a>
+                      <a href="/"> Supported by Era Swap Charity Pool</a>
                     </h4>
                   </div>
                 </div>
@@ -384,9 +282,9 @@ export class Home extends Component<State> {
                   data-aos-delay="300"
                 >
                   <div className="icon-box">
-                    <img src="assets/img/automated-escrow-04.png" width="150" />
+                    <img alt="img" src="assets/img/automated-escrow-04.png" width="150" />
                     <h4>
-                      <a href=""> Automated Escrow </a>
+                      <a href="/"> Automated Escrow </a>
                     </h4>
                   </div>
                 </div>
@@ -398,9 +296,13 @@ export class Home extends Component<State> {
                   data-aos-delay="100"
                 >
                   <div className="icon-box">
-                    <img src="assets/img/withdraw-donations-hassle-free-05.png" width="150" />
+                    <img
+                      alt="img"
+                      src="assets/img/withdraw-donations-hassle-free-05.png"
+                      width="150"
+                    />
                     <h4>
-                      <a href=""> Withdraw Donations Hassle-free</a>
+                      <a href="/"> Withdraw Donations Hassle-free</a>
                     </h4>
                   </div>
                 </div>
@@ -410,9 +312,9 @@ export class Home extends Component<State> {
                   data-aos-delay="200"
                 >
                   <div className="icon-box">
-                    <img src="assets/img/easy-to-manage-promote-06.png" width="150" />
+                    <img alt="img" src="assets/img/easy-to-manage-promote-06.png" width="150" />
                     <h4>
-                      <a href=""> Easy-To-Manage & Promote</a>
+                      <a href="/"> Easy-To-Manage & Promote</a>
                     </h4>
                   </div>
                 </div>
@@ -422,10 +324,8 @@ export class Home extends Component<State> {
                   data-aos-delay="300"
                 >
                   <div className="icon-box">
-                    <img src="assets/img/global-payment-support-07.png" width="150" />
-                    <h4>
-                      <a href=""> Global Payment Support</a>
-                    </h4>
+                    <img alt="img" src="assets/img/global-payment-support-07.png" width="150" />
+                    <h4>Global Payment Support</h4>
                   </div>
                 </div>
                 <div
@@ -434,10 +334,12 @@ export class Home extends Component<State> {
                   data-aos-delay="300"
                 >
                   <div className="icon-box">
-                    <img src="assets/img/non-manipulated-reviews-ratings-08.png" width="150" />
-                    <h4>
-                      <a href=""> Non-manipulated reviews and ratings </a>
-                    </h4>
+                    <img
+                      alt="img"
+                      src="assets/img/non-manipulated-reviews-ratings-08.png"
+                      width="150"
+                    />
+                    <h4>Non-manipulated reviews and ratings</h4>
                   </div>
                 </div>
               </div>
@@ -465,6 +367,7 @@ export class Home extends Component<State> {
                     <a
                       href="https://play.google.com/store/apps/details?id=com.eraswaponeapp&hl=en"
                       target="_blank"
+                      rel="noopener noreferrer"
                       className=""
                     >
                       <img
