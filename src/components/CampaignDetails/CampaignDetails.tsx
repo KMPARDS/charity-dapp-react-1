@@ -348,9 +348,9 @@ export function CampaignDetails()  {
                         <ul className="com-list">
                         {recent.map((ele) => {
                           return (
-                          <li>
-                            <span className="donor-name"> ele[1]	</span>
-                            <span className="contributed-amt pull-right"><i className="fa fa-inr"></i>ele[2]</span>
+                          <li> 
+                            <span className="donor-name"> {ele[1]}	</span>
+                            <span className="contributed-amt pull-right"><i className="fa fa-inr"></i>{ethers.utils.formatEther(ele[2])} &nbsp; ES</span>
                             {/* <div className="blackquote"><i className="fa fa-clock-o" aria-hidden="true"></i> 2 days ago</div>             */}
                           </li>
                           );
