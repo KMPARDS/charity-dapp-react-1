@@ -12,7 +12,7 @@ export class Footer extends Component {
             <div className="row">
               <div className="col-lg-3 col-md-6">
                 <div className="footer-info">
-                  <img src="assets/img/logo.png" width="150" />
+                  <img src={process.env.PUBLIC_URL + "/assets/img/logo.png"} width="150" />
 
                   <div className="social-links mt-3">
                     <a href="https://www.facebook.com/eraswap" target="_blank">

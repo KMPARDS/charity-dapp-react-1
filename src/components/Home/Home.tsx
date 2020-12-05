@@ -52,9 +52,9 @@ export class Home extends Component<State> {
                   </h1>
 
                   <br />
-                  <Button className="get-started-btn btn-yellow btn btn-lg scrollto"  onClick={this.handleShow}>
+                  <Link className="get-started-btn btn-yellow btn btn-lg scrollto"  to="/ExploreCampaign">
                     Explore Campaigns
-                  </Button> 
+                  </Link> 
                   <Link to="/CreateCampaign" className="get-started-btn btn scrollto btn-lg"  onClick={this.handleShow1}>
                     Create Your Campaign
                   </Link>

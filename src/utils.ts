@@ -26,7 +26,7 @@ export function renderSecondsRemaining(numberOfSeconds: number): string {
   const minutes = Math.floor((numberOfSeconds - days * 60 * 60 * 24 - hours * 60 * 60) / 60);
   const seconds = numberOfSeconds - days * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60;
 
-  return `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`;
+  return `${days} days, ${hours} hours and  ${minutes} minutes `;
 }
 
 export function renderTimestampRemaining(unixTimestampSeconds: number): string {
@@ -36,6 +36,12 @@ export function renderTimestampRemaining(unixTimestampSeconds: number): string {
   return renderSecondsRemaining(secondsRemaining);
 }
 
+export function timeStamptodays(unixTimestampSeconds: number): number {
+  const currentTimestamp = Math.round(Date.now() / 1000);
+  let secondsRemaining =  unixTimestampSeconds -currentTimestamp ;
+  if (secondsRemaining < 0) secondsRemaining = 0;
+  return Math.floor(secondsRemaining / 60 / 60 / 24);
+}
 export function renderTimeStamp(datetime: string): number {
   const date = new Date(datetime);
   const timeStamp: number = date.getTime();

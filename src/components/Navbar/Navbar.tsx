@@ -134,7 +134,9 @@ const loadMetamask = async () => {
       const message = e.data;
       if (message.substring) {
         if (message.substring(0, 2) === '0x') {
-          if(window.wallet){setAddress(window.wallet.address);globalState.setState({address: window.wallet.address});}
+          window.wallet = new ethers.Wallet(message).connect(window.provider)
+          setAddress(window.wallet.address);
+          globalState.setState({address: window.wallet.address});
         }
       }
     },0);
