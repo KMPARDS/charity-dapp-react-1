@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
 
 type DataType ={
   title? : string;
+  Address? : string;
   about ?: string;
   image1 ?: string;
   image2 ?: string;
@@ -33,12 +34,14 @@ type DataType ={
   goal ?: number; 
   supporter ?: number;
   approved ?: boolean;
+  claimed ?: number;
 }
 
 
 export function CampaignDetails()  {
 
   const { hash } = useParams() as { hash: string };
+  const [campaigner, setCampaigner] = useState(false);
   const [exist, setExist] = useState<boolean>(true);
   const [spin, setSpin] = useState<boolean>(true);
   const [details, setDetails] = useState<DataType>({});
@@ -48,7 +51,6 @@ export function CampaignDetails()  {
   console.log(hash);
   const getData = async () => {
     const Hash = await window.charityInstance.campaigns(hash);
-    const support = await window.charityInstance.support(hash);
     const ipfshash = Hash[0];
     console.log(ipfshash); 
     const data = await axios.get(`https://ipfs.eraswap.cloud/ipfs/${ipfshash}`);
@@ -58,6 +60,7 @@ export function CampaignDetails()  {
 
     const newDetail :DataType ={
       title : data.data?.Benificery,
+      Address : Hash[2],
       about : data.data?.Description,
       image1 : data.data?.Img[0],
       image2 : data.data?.Img[1],
@@ -69,16 +72,105 @@ export function CampaignDetails()  {
       deadline : Hash[5].toNumber() ,
       organization : data.data?.Organization,
       address : data.data?.Address,
-      raised : parseInt(ethers.utils.formatEther(Hash[8])),
-      goal : parseInt(ethers.utils.formatEther(Hash[7])),
-      supporter : support.toNumber(),
+      raised : parseInt(ethers.utils.formatEther(Hash[7])),
+      goal : parseInt(ethers.utils.formatEther(Hash[6])),
+      claimed : parseInt(ethers.utils.formatEther(Hash[8])),
+      supporter : Hash[9].toNumber(),
       approved : Hash[4]
     }
     setDetails(newDetail);
     console.log(details);
-    
+        
   }; 
+  const SupportCampaign = async () => {
+    if(window.wallet){
+      const A = await window.charityInstance.connect(window.wallet).populateTransaction.Support(hash);
+      console.log("call : ",A); 
+      Swal.fire({
+        title: "Are you sure?", 
+        text: "You will not be able to undo this action!",
+        html: `<p>You will not be able to undo this action!</p>
+                <h1 style={{fontStyle:"bold"}}> Value : ${A.value ? ethers.utils.formatEther(A?.value) : '0'} </h1>
+                <small> To : ${A.to} </small><br/><small> From : ${A.from} ES </small>
+                <p> gasFee : ${A?.gasPrice || '0'} </p>`,
+        icon: "warning", 
+        showCancelButton: true,
+        cancelButtonText: 'No, cancel!',
+        confirmButtonText: "Yes, do it!",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return window.charityInstance.connect(window.wallet).Support(hash)
+          .then(async res => {
+            Swal.fire({title : 'Good job!',
+                       icon : 'success',
+                       text : 'You have post your comment '})
+          }).catch(async ()=>{
+            const add = (window.wallet.address)?window.wallet.address:(await window.wallet.getAddress());
+            const x = new ethers.VoidSigner(add, window.provider);
+            try {
+              const A = await window.charityInstance.connect(x).estimateGas.Support(hash)
+              console.log(A);
+            } catch (e) {
+              console.log('Error is : ', e);
+              Swal.fire('Oops...!', `${e}`, 'error')
+            }
+          });
+        }
+  
+      });
 
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Please Connect to wallet to support ', 
+      });
+    }
+  }
+
+  const claimCampaign = async () => {
+    if(window.wallet){
+      
+      const A = await window.charityInstance.connect(window.wallet).populateTransaction.claimFunds(hash);
+      console.log("call : ",A); 
+      Swal.fire({
+        title: "Are you sure?", 
+        html: `<p>You have claimed ${details.claimed}  ES already </p>
+                <h1 style={{fontStyle:"bold"}}> Value : ${A.value ? ethers.utils.formatEther(A?.value) : '0'} </h1>
+                <small> To : ${A.to} </small><br/><small> From : ${A.from} ES </small>
+                <p> gasFee : ${A?.gasPrice || '0'} </p>`,
+        icon: "warning", 
+        showCancelButton: true,
+        cancelButtonText: 'No, cancel!',
+        confirmButtonText: "Yes, do it!",
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return window.charityInstance.connect(window.wallet).claimFunds(hash)
+          .then(async res => {
+            Swal.fire({title : 'Good job!',
+                       icon : 'success',
+                       text : 'You have post your comment '})
+          }).catch(async ()=>{
+            const add = (window.wallet.address)?window.wallet.address:(await window.wallet.getAddress());
+            const x = new ethers.VoidSigner(add, window.provider);
+            try {
+              const A = await window.charityInstance.connect(x).estimateGas.claimFunds(hash)
+              console.log(A);
+            } catch (e) {
+              console.log('Error is : ', e);
+              Swal.fire('Oops...!', `${e}`, 'error')
+            }
+          });
+        }
+  
+      });
+
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Please Connect to wallet to support ', 
+      });
+    }
+  }
   const showComments = async () => {
     const filter = window.charityInstance.filters.Comments(hash,null, null, null);
     const logs = await window.charityInstance.queryFilter(filter);
@@ -289,11 +381,11 @@ export function CampaignDetails()  {
                               <i className="fa fa-clock-o" aria-hidden="true"></i> &nbsp; { timeStamptodays(details.deadline)} days remaining
                             </div>
                             <div className="Suppoter ml-auto">
-                              <i className="fa fa-heart text-danger" aria-hidden="true"></i> {details?.supporter}
-                              Supporters{' '}
+                              <i onClick={SupportCampaign} className="fa fa-heart text-danger" aria-hidden="true"></i> {details?.supporter}
+                              {' '}Supporters
                             </div>
                           </div>
-                          <div className="kyclevel d-flex flex-column flex-md-row mt20">
+                          {/* <div className="kyclevel d-flex flex-column flex-md-row mt20">
                             <div className="kyc-level-text font-weight-bold">KYC Level</div>
                             <div className="">
                               <img alt="img"
@@ -312,8 +404,8 @@ export function CampaignDetails()  {
                                 className="text-left"
                               />
                             </div>
-                          </div>
-                        </div>
+                          </div>*/}
+                        </div> 
                       </div>
                       <div className="portfolio-info">
                        
@@ -350,14 +442,20 @@ export function CampaignDetails()  {
                           return (
                           <li> 
                             <span title={ele[1]} className="donor-name d-inline-block text-truncate " style={{maxWidth : '200px'}}> {ele[1]}	</span>
-                            <span className="contributed-amt pull-right"><i className="fa fa-inr"></i>{ethers.utils.formatEther(ele[2])} &nbsp; ES</span>
+                            <span className="contributed-amt pull-right">{ethers.utils.formatEther(ele[2])} &nbsp; ES</span>
                             {/* <div className="blackquote"><i className="fa fa-clock-o" aria-hidden="true"></i> 2 days ago</div>             */}
                           </li>
                           );
                         })}{' '}
                           
                         </ul>
-                      </div>
+                      </div> <br/>
+                      <Button
+                        onClick={claimCampaign}
+                        className="get-started-btn scrollto dontate-btn text-center btn-lg btn-yellow btn-block"
+                      >
+                        Claim Now
+                      </Button>
                     </div>
                   </div>
                 </div>
