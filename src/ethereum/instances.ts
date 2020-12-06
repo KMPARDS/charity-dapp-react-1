@@ -11,7 +11,7 @@ import { CharityDappCharityDappFactory } from './CharityDappCharityDappFactory';
 // window.providerESN = new CustomProvider('mainnet');
 window.provider = new ethers.providers.JsonRpcProvider('https://mainnet.eraswap.network');
 window.charityInstance = CharityDappCharityDappFactory.connect(
-  '0xccc6D594b78603A3A2362A162989E2884b6595a8',
+  '0xBD4857438AF7509DcBCE4FD62F8096b0D035Ae42',
   window.provider
 );
 // Temporary wallet
