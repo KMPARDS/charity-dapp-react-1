@@ -59,6 +59,53 @@ export default function Admin(props : {Hash :string}) {
     }
   };
 
+  const DonatebyPool = async () => {
+    if (window.wallet) {
+      // const A = await window.charityInstance.connect(window.wallet).populateTransaction.addComments(hash,comment);
+      // console.log("call : ",A);
+      Swal.fire({
+        title: 'Nice !',
+        text: 'Please enter amount',
+        input: 'number',
+        showCancelButton: true,
+        cancelButtonText: 'cancel',
+        confirmButtonText: 'Confirm',
+        showLoaderOnConfirm: true,
+        preConfirm: (val) => {
+          return window.charityInstance
+            .connect(window.wallet)
+            .CharityPool(Hash,  ethers.utils.parseEther(val) )
+            .then(
+              () => {
+                Swal.fire({
+                  title: 'Good job!',
+                  icon: 'success',
+                  text: `You have donated ${val} ES `,
+                });
+              },
+              (e) => Swal.fire('Oops...!', `${JSON.stringify(e)}`, 'error')
+            );
+          // .catch(async ()=>{
+          //   const add = (window.wallet.address)?window.wallet.address:(await window.wallet.getAddress());
+          //   const x = new ethers.VoidSigner(add, window.provider);
+          //   try {
+          //     const A = await window.charityInstance.connect(x).estimateGas.donate(hash,{value: ethers.utils.parseEther(val)})
+          //     console.log(A);
+          //   } catch (e) {
+          //     console.log('Error is : ', e);
+          //     Swal.fire('Oops...!', `${e}`, 'error')
+          //   }
+          // });
+        },
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Please Connect to wallet ...',
+      });
+    }
+  };
+
   return (
     <div>
       <h3>Admin Panel</h3>
@@ -69,7 +116,7 @@ export default function Admin(props : {Hash :string}) {
         Approve Campaign
       </Button>
       <Button
-        onClick={Approve}
+        onClick={DonatebyPool}
         style={{background : "red"}}
         className="get-started-btn scrollto dontate-btn text-center btn-lg btn-yellow btn-block"
       >

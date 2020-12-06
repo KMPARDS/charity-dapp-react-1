@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Home } from './components/Home/Home';
 import { CreateCampaign } from './components/CreateCampaign/CreateCampaign';
-// import { Profile } from './components/Profile/Profile';
+import { Profile } from './components/Profile/Profile';
 import { ExploreCampaign } from './components/ExploreCampaign/ExploreCampaign';
 import { CampaignDetails } from './components/CampaignDetails/CampaignDetails';
 import WalletContext from './components/WalletContext';
@@ -18,12 +18,12 @@ function App() {
     <MapProvider>
       <div className="App">
         <WalletContext.Provider value={{ state, setState }}>
-          <NavbarMain />
           <BrowserRouter>
+          <NavbarMain />
             <Switch>
               <Route path="/" exact component={Home} />
               <Route path="/CreateCampaign" exact component={CreateCampaign} />
-              {/* <Route path="/Profile" exact component={Profile} /> */}
+              <Route path="/Profile" exact component={Profile} />
               <Route path="/ExploreCampaign" exact component={ExploreCampaign} />
               <Route path="/CampaignDetails/:hash" exact component={CampaignDetails} />
             </Switch>
