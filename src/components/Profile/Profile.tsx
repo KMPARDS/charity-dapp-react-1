@@ -21,7 +21,7 @@ export class Profile extends Component<State> {
 
   getDonation = async () =>{
     if(this.state.Address){
-      const filter = window.charityInstance.filters.Donated(null, null,null); // second arg shoul be this.state.Address
+      const filter = window.charityInstance.filters.Donated(null, this.state.Address,null); // second arg shoul be this.state.Address
       const logs = await window.charityInstance.queryFilter(filter);
       const parseLogs = logs.map((log) => window.charityInstance.interface.parseLog(log));
       const donationAll = parseLogs.map((ele) => [ele.args[0], parseInt(ethers.utils.formatEther(ele.args[2]))]);
