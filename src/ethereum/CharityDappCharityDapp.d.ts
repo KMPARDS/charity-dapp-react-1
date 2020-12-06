@@ -1250,7 +1250,7 @@ export class CharityDappCharityDapp extends Contract {
 
     Donated(
       proposalAddress: BytesLike | null,
-      donorAddress: null,
+      donorAddress: string | null,
       amount: null
     ): EventFilter;
 
