@@ -17,11 +17,11 @@ import {
   PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
-import {BytesLike} from "@ethersproject/bytes";
-import {Listener, Provider} from "@ethersproject/providers";
-import {FunctionFragment, EventFragment, Result} from "@ethersproject/abi";
+import { BytesLike } from "@ethersproject/bytes";
+import { Listener, Provider } from "@ethersproject/providers";
+import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface CharityDappCharityDappInterface extends ethers.utils.Interface {
+interface CharityDappInterface extends ethers.utils.Interface {
   functions: {
     "Admin(address)": FunctionFragment;
     "CharityPool(bytes32,uint256)": FunctionFragment;
@@ -41,6 +41,7 @@ interface CharityDappCharityDappInterface extends ethers.utils.Interface {
     "owner()": FunctionFragment;
     "prepaidEs()": FunctionFragment;
     "randomnessManager()": FunctionFragment;
+    "removeAdmin(address)": FunctionFragment;
     "resolveAddress(bytes32)": FunctionFragment;
     "resolveAddressStrict(bytes32)": FunctionFragment;
     "resolveUsername(address)": FunctionFragment;
@@ -109,6 +110,7 @@ interface CharityDappCharityDappInterface extends ethers.utils.Interface {
     functionFragment: "randomnessManager",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "removeAdmin", values: [string]): string;
   encodeFunctionData(
     functionFragment: "resolveAddress",
     values: [BytesLike]
@@ -198,6 +200,10 @@ interface CharityDappCharityDappInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "removeAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "resolveAddress",
     data: BytesLike
   ): Result;
@@ -257,7 +263,7 @@ interface CharityDappCharityDappInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ProposalClaimed"): EventFragment;
 }
 
-export class CharityDappCharityDapp extends Contract {
+export class CharityDapp extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -268,7 +274,7 @@ export class CharityDappCharityDapp extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: CharityDappCharityDappInterface;
+  interface: CharityDappInterface;
 
   functions: {
     Admin(
@@ -524,6 +530,16 @@ export class CharityDappCharityDapp extends Contract {
     ): Promise<{
       0: string;
     }>;
+
+    removeAdmin(
+      user: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeAdmin(address)"(
+      user: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     resolveAddress(
       _username: BytesLike,
@@ -865,6 +881,16 @@ export class CharityDappCharityDapp extends Contract {
 
   "randomnessManager()"(overrides?: CallOverrides): Promise<string>;
 
+  removeAdmin(
+    user: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeAdmin(address)"(
+    user: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   resolveAddress(
     _username: BytesLike,
     overrides?: CallOverrides
@@ -1144,6 +1170,13 @@ export class CharityDappCharityDapp extends Contract {
 
     "randomnessManager()"(overrides?: CallOverrides): Promise<string>;
 
+    removeAdmin(user: string, overrides?: CallOverrides): Promise<void>;
+
+    "removeAdmin(address)"(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     resolveAddress(
       _username: BytesLike,
       overrides?: CallOverrides
@@ -1416,6 +1449,13 @@ export class CharityDappCharityDapp extends Contract {
 
     "randomnessManager()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    removeAdmin(user: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "removeAdmin(address)"(
+      user: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     resolveAddress(
       _username: BytesLike,
       overrides?: CallOverrides
@@ -1672,6 +1712,16 @@ export class CharityDappCharityDapp extends Contract {
 
     "randomnessManager()"(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    removeAdmin(
+      user: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeAdmin(address)"(
+      user: string,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     resolveAddress(

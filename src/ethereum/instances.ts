@@ -1,17 +1,9 @@
 import { ethers } from 'ethers';
-// import { CustomProvider,  addresses } from 'eraswap-sdk';
-import { CharityDappCharityDappFactory } from './CharityDappCharityDappFactory';
-// import { CustomProvider } from './custom-providers';
+import { CharityDappFactory } from './CharityDappFactory';
 
-// import {
-// } from 'eraswap-sdk/dist/typechain/ESN';
-
-// const config = addresses[process.env.REACT_APP_ENV === 'production' ? 'production' : 'development'];
-//@ts-ignore
-// window.providerESN = new CustomProvider('mainnet');
 window.provider = new ethers.providers.JsonRpcProvider('https://mainnet.eraswap.network');
-window.charityInstance = CharityDappCharityDappFactory.connect(
-  '0xBD4857438AF7509DcBCE4FD62F8096b0D035Ae42',
+window.charityInstance = CharityDappFactory.connect(
+  '0x01Ec93d789844135B0863Ac6F19e7E98AB237CE3',
   window.provider
 );
 // Temporary wallet
