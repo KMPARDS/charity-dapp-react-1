@@ -30,7 +30,6 @@ export class Profile extends Component<State> {
       this.setState({ ...this.state, donation: donationAll });
       console.log('All :', donationAll);
     };
-
   }
 
   getCampaign = async () => {
