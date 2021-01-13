@@ -122,7 +122,7 @@ function Step4(props: inputProps) {
               const add = window.wallet.address
                 ? window.wallet.address
                 : await window.wallet.getAddress();
-              const x = new ethers.VoidSigner(add, window.providerESN);
+              const x = new ethers.VoidSigner(add, window.provider);
               try {
                 const A = await window.charityInstance
                   .connect(x)
