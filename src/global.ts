@@ -6,7 +6,7 @@ import { CharityDapp } from './ethereum/CharityDapp';
 declare global {
   interface Window {
     provider: ethers.providers.JsonRpcProvider;
-    providerESN: CustomProvider;
+    providerESN: CustomProvider |  ethers.providers.JsonRpcProvider;
     wallet: any;
     ethereum: ethers.providers.ExternalProvider;
     charityInstance: CharityDapp;
