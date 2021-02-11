@@ -5,8 +5,8 @@ import { CharityDapp } from './ethereum/CharityDapp';
 // mark the typings of your global variables
 declare global {
   interface Window {
-    provider: ethers.providers.JsonRpcProvider;
-    providerESN: CustomProvider;
+    provider: ethers.providers.JsonRpcProvider | CustomProvider;
+    providerESN: CustomProvider |  ethers.providers.JsonRpcProvider;
     wallet: any;
     ethereum: ethers.providers.ExternalProvider;
     charityInstance: CharityDapp;

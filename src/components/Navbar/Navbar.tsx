@@ -49,7 +49,7 @@ export function NavbarMain() {
           network.name = 'Main Era Swap Network';
         }
         console.log(ethers.Wallet);
-        const onCorrectNetwork = network.chainId === Number(process.env.REACT_APP_CHAIN_ID ?? 0);
+        const onCorrectNetwork = network.chainId === 5197;
         if (!onCorrectNetwork) {
           alert('please connect to eraswap network ');
         } else {
