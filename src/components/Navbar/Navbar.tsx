@@ -12,11 +12,11 @@ export function NavbarMain() {
   const globalState = useContext(WalletContext);
   const [Address, setAddress] = useState(null);
 
-  async function loadWallet() {
+    async function loadWallet() {
     try {
       //  Create WalletConnect Provider
       const walletConnectProvider = new WalletConnectProvider({
-        rpc: { 5196: 'https://testnet.eraswap.network' },
+        rpc: { 5197: 'https://rpc-mumbai.mainnet.eraswap.network' },
         // infuraId: "b81341e3ab894360a84f3fa640ab985e" ,
         qrcode: true,
       });
@@ -25,11 +25,12 @@ export function NavbarMain() {
       console.log(provider.getSigner());
       const wallet = await provider.getSigner();
       const address = await wallet.getAddress();
+      // const network = await wallet.getAddress();
       setAddress(address);
       globalState.setState({ address });
       window.wallet = wallet;
     } catch (e) {
-      Swal.fire('Opps !', 'Something went wrong. Please try again', 'error');
+      Swal.fire('Cancelled', 'Something went wrong. Please try again', 'oops !');
     }
   }
 
