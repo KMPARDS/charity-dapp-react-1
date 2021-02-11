@@ -16,7 +16,7 @@ export function NavbarMain() {
     try {
       //  Create WalletConnect Provider
       const walletConnectProvider = new WalletConnectProvider({
-        rpc: { 5197: 'https://mainnet.eraswap.network' },
+        rpc: { 5197: 'https://rpc-mumbai.mainnet.eraswap.network' },
         // infuraId: "b81341e3ab894360a84f3fa640ab985e" , 
         qrcode: true,
       });
