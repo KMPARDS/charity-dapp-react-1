@@ -153,6 +153,7 @@ export function NavbarMain() {
             window.wallet = undefined;
             setAddress(null);
             globalState.setState({ address: '' });
+            window.localStorage.clear();
           }}
         >
           DisConnect
